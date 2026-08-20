@@ -2,139 +2,149 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Mi Catálogo</title>
-    <style>
-        /* Estilos generales del catálogo */
-        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
-        .catalogo { display: flex; flex-wrap: wrap; gap: 20px; }
-        .tarjeta { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 8px; width: 220px; text-align: center; }
-        .tarjeta img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; }
-        .precio { color: #27ae60; font-weight: bold; margin: 10px 0; }
-        
-        /* Estilos de la Ventana Modal (la que flota) */
-        .modal {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0, 0, 0, 0.6);
-            display: none; /* Oculto por defecto */
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .modal-contenido {
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            width: 90%;
-            max-width: 400px;
-            position: relative;
-            text-align: left;
-        }
-        .cerrar-modal {
-            position: absolute;
-            top: 10px; right: 15px;
-            cursor: pointer;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .btn-opciones {
-            background: #3498db; color: white; border: none; padding: 8px 12px;
-            border-radius: 4px; cursor: pointer; width: 100%;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crea Tu Lista - Catálogo</title>
+    <!-- Tailwind CSS CDN para diseño rápido y responsivo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-50 text-gray-800 font-sans">
 
-    <h1>Mi Catálogo de Productos</h1>
-    
-    <!-- Aquí es donde JavaScript dibujará las tarjetas de tus productos -->
-    <div id="contenedor-catalogo" class="catalogo"></div>
-
-    <!-- VENTANA MODAL (Oculta hasta que hacen clic en un producto) -->
-    <div id="modal-producto" class="modal">
-        <div class="modal-contenido">
-            <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
-            <h2 id="modal-titulo">Nombre</h2>
+    <!-- 1. BARRA DE NAVEGACIÓN (HEADER) -->
+    <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
             
-            <img id="modal-imagen" src="" alt="Imagen del producto" style="width: 100%; height: 200px; object-fit: contain;">
-            
-            <p id="modal-precio" class="precio"></p>
+            <!-- Logo / Título -->
+            <div class="flex items-center space-x-2">
+                <span class="text-2xl font-bold text-emerald-700 tracking-wide">Crea Tu Lista</span>
+            </div>
 
-            <!-- Menú desplegable para los 20+ colores -->
-            <label for="select-color"><strong>Color:</strong></label><br>
-            <select id="select-color" style="width: 100%; padding: 8px; margin: 5px 0 15px 0;"></select>
+            <!-- Menú de Navegación (Escritorio) -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium text-gray-600">
+                <a href="index.html" class="text-emerald-700 font-semibold">Inicio</a>
+                <a href="#categorias" class="hover:text-emerald-600 transition">Útiles</a>
+                <a href="#categorias" class="hover:text-emerald-600 transition">Arte y Manualidades</a>
+                <a href="#categorias" class="hover:text-emerald-600 transition">Papelería</a>
+                <a href="#categorias" class="hover:text-emerald-600 transition">Juguetes</a>
+                <a href="#categorias" class="hover:text-emerald-600 transition">Lectura</a>
+                <a href="#categorias" class="hover:text-emerald-600 transition">Aseo</a>
+            </nav>
 
-            <!-- Selector de cantidad -->
-            <label for="input-cantidad"><strong>Cantidad:</strong></label><br>
-            <input type="number" id="input-cantidad" value="1" min="1" style="width: 100%; padding: 8px; margin: 5px 0 15px 0;">
+            <!-- Buscador e Ícono de Carrito -->
+            <div class="flex items-center space-x-4">
+                <div class="relative hidden lg:block">
+                    <input type="text" placeholder="Buscar productos..." class="bg-gray-100 text-sm rounded-full pl-4 pr-10 py-2 focus:outline-none focus:ring-2 focus:ring-emerald-500 w-48">
+                    <i class="fa-solid fa-magnifying-glass absolute right-3 top-3 text-gray-400 text-sm"></i>
+                </div>
 
-            <!-- Botón final -->
-            <button style="background: #25d366; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer;">
-                Pedir por WhatsApp
-            </button>
+                <!-- Botón Carrito con Contador -->
+                <button id="btn-carrito" class="relative bg-emerald-700 text-white p-2.5 rounded-full hover:bg-emerald-800 transition">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-count" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
+                </button>
+
+                <!-- Botón Menú Hamburguesa (Móvil) -->
+                <button id="menu-movil-btn" class="md:hidden text-gray-700 text-xl focus:outline-none">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+            </div>
         </div>
-    </div>
 
-    <!-- EL CEREBRO (JavaScript) -->
-    <script>
-        let listaProductos = [];
+        <!-- Menú desplegable para Celular (Oculto por defecto) -->
+        <div id="menu-movil" class="hidden md:hidden bg-white border-t px-4 pt-2 pb-4 space-y-2">
+            <a href="index.html" class="block py-2 text-emerald-700 font-semibold">Inicio</a>
+            <a href="#categorias" class="block py-2 text-gray-600">Útiles</a>
+            <a href="#categorias" class="block py-2 text-gray-600">Arte y Manualidades</a>
+            <a href="#categorias" class="block py-2 text-gray-600">Papelería</a>
+            <a href="#categorias" class="block py-2 text-gray-600">Juguetes</a>
+            <a href="#categorias" class="block py-2 text-gray-600">Lectura</a>
+            <a href="#categorias" class="block py-2 text-gray-600">Aseo</a>
+        </div>
+    </header>
 
-        // 1. Cargar el archivo productos.json al abrir la página
-        fetch('productos.json')
-            .then(respuesta => respuesta.json())
-            .then(datos => {
-                listaProductos = datos;
-                mostrarCatalogo(listaProductos);
-            })
-            .catch(error => console.error('Hubo un error cargando los productos:', error));
+    <!-- 2. SECCIÓN PRINCIPAL (HERO / BANNER) -->
+    <section class="bg-gradient-to-b from-white to-gray-100 py-10 px-4 text-center">
+        <div class="max-w-4xl mx-auto">
+            <!-- Imagen de Banner Principal -->
+            <div class="rounded-2xl overflow-hidden shadow-md mb-8 bg-white p-4">
+                <img src="https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&q=80&w=1200" alt="Banner Papelería" class="w-full h-48 md:h-72 object-cover rounded-xl">
+            </div>
 
-        // 2. Dibujar las tarjetas limpias en la página principal
-        function mostrarCatalogo(productos) {
-            const contenedor = document.getElementById('contenedor-catalogo');
-            contenedor.innerHTML = '';
+            <!-- Botón de Llamado a la Acción -->
+            <a href="#catalogo" class="inline-flex items-center space-x-2 bg-emerald-700 hover:bg-emerald-800 text-white font-medium px-8 py-3.5 rounded-full shadow-lg transition transform hover:-translate-y-0.5">
+                <i class="fa-solid fa-sparkles"></i>
+                <span>VER CATÁLOGO</span>
+            </a>
+        </div>
+    </section>
 
-            productos.forEach((producto, index) => {
-                const tarjeta = document.createElement('div');
-                tarjeta.className = 'tarjeta';
-                
-                tarjeta.innerHTML = `
-                    <img src="${producto.imagen}" alt="${producto.nombre}">
-                    <h3>${producto.nombre}</h3>
-                    <div class="precio">S/ ${producto.precio.toFixed(2)}</div>
-                    <button class="btn-opciones" onclick="abrirModal(${index})">Ver opciones</button>
-                `;
-                
-                contenedor.appendChild(tarjeta);
-            });
-        }
-
-        // 3. Abrir el modal y rellenarlo con la información del producto seleccionado
-        function abrirModal(index) {
-            const producto = listaProductos[index];
-
-            document.getElementById('modal-titulo').innerText = producto.nombre;
-            document.getElementById('modal-imagen').src = producto.imagen;
-            document.getElementById('modal-precio').innerText = `S/ ${producto.precio.toFixed(2)}`;
-
-            // Llenar el menú desplegable con los colores (aquí entran tus 20+ colores sin ocupar espacio)
-            const selectColor = document.getElementById('select-color');
-            selectColor.innerHTML = ''; // Limpiar colores anteriores
+    <!-- 3. ACCESOS RÁPIDOS POR CATEGORÍAS (CÍRCULOS) -->
+    <section id="categorias" class="py-12 max-w-6xl mx-auto px-4">
+        <h2 class="text-center text-xl font-bold text-gray-700 mb-8">Explora por Categorías</h2>
+        
+        <!-- Grid adaptable: 2 columnas en celular, 3 en tablet, 6 en PC -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
             
-            producto.colores.forEach(color => {
-                let opcion = document.createElement('option');
-                opcion.value = color;
-                opcion.innerText = color;
-                selectColor.appendChild(opcion);
-            });
+            <!-- Categoría 1 -->
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-2 border-emerald-600/40 bg-white flex items-center justify-center shadow-sm group-hover:border-emerald-600 group-hover:shadow-md transition">
+                    <i class="fa-solid fa-backpack text-3xl text-emerald-700"></i>
+                </div>
+                <span class="mt-3 text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Útiles</span>
+            </a>
 
-            // Mostrar el modal cambiando su estilo a flex
-            document.getElementById('modal-producto').style.display = 'flex';
-        }
+            <!-- Categoría 2 -->
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-2 border-emerald-600/40 bg-white flex items-center justify-center shadow-sm group-hover:border-emerald-600 group-hover:shadow-md transition">
+                    <i class="fa-solid fa-paint-brush text-3xl text-emerald-700"></i>
+                </div>
+                <span class="mt-3 text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Arte y Manualidades</span>
+            </a>
 
-        // 4. Cerrar el modal
-        function cerrarModal() {
-            document.getElementById('modal-producto').style.display = 'none';
-        }
+            <!-- Categoría 3 -->
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-2 border-emerald-600/40 bg-white flex items-center justify-center shadow-sm group-hover:border-emerald-600 group-hover:shadow-md transition">
+                    <i class="fa-solid fa-scroll text-3xl text-emerald-700"></i>
+                </div>
+                <span class="mt-3 text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Papelería</span>
+            </a>
+
+            <!-- Categoría 4 -->
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-2 border-emerald-600/40 bg-white flex items-center justify-center shadow-sm group-hover:border-emerald-600 group-hover:shadow-md transition">
+                    <i class="fa-solid fa-puzzle-piece text-3xl text-emerald-700"></i>
+                </div>
+                <span class="mt-3 text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Juguetes</span>
+            </a>
+
+            <!-- Categoría 5 -->
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-2 border-emerald-600/40 bg-white flex items-center justify-center shadow-sm group-hover:border-emerald-600 group-hover:shadow-md transition">
+                    <i class="fa-solid fa-book-open text-3xl text-emerald-700"></i>
+                </div>
+                <span class="mt-3 text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Lectura</span>
+            </a>
+
+            <!-- Categoría 6 -->
+            <a href="#" class="group flex flex-col items-center">
+                <div class="w-24 h-24 md:w-28 md:h-28 rounded-full border-2 border-emerald-600/40 bg-white flex items-center justify-center shadow-sm group-hover:border-emerald-600 group-hover:shadow-md transition">
+                    <i class="fa-solid fa-pump-soap text-3xl text-emerald-700"></i>
+                </div>
+                <span class="mt-3 text-sm font-semibold text-gray-700 group-hover:text-emerald-700">Aseo</span>
+            </a>
+
+        </div>
+    </section>
+
+    <!-- Script rápido para hacer funcionar el menú móvil -->
+    <script>
+        const btnMenu = document.getElementById('menu-movil-btn');
+        const menuMovil = document.getElementById('menu-movil');
+
+        btnMenu.addEventListener('click', () => {
+            menuMovil.classList.toggle('hidden');
+        });
     </script>
 </body>
 </html>
