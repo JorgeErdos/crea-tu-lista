@@ -1,0 +1,30 @@
+[
+    {
+        "id": "prod_001",
+        "nombre": "Papel Lustre",
+        "categoria": "Papeles",
+        "precio": 0.5,
+        "colores": [
+            "Fucsia",
+            "Amarillo Mostaza",
+            "Verde Petróleo",
+            "Azul"
+        ],
+        "colores_sin_stock": [
+            "Fucsia"
+        ],
+        "imagen": "papel_lustre.jpg"
+    },
+    {
+        "id": "prod_002",
+        "nombre": "Cuaderno Espiral",
+        "categoria": "Cuadernos",
+        "precio": 4.5,
+        "colores": [
+            "Negro",
+            "Rojo"
+        ],
+        "colores_sin_stock": [],
+        "imagen": "cuaderno.jpg"
+    }
+]
