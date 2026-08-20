@@ -2,159 +2,139 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mi Tienda de Útiles</title>
+    <title>Mi Catálogo</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #333;
-        }
-        /* Contenedor de las tarjetas */
-        #contenedor-productos {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
+        /* Estilos generales del catálogo */
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f9f9f9; }
+        .catalogo { display: flex; flex-wrap: wrap; gap: 20px; }
+        .tarjeta { background: white; border: 1px solid #ddd; padding: 15px; border-radius: 8px; width: 220px; text-align: center; }
+        .tarjeta img { width: 100%; height: 150px; object-fit: cover; border-radius: 4px; }
+        .precio { color: #27ae60; font-weight: bold; margin: 10px 0; }
+        
+        /* Estilos de la Ventana Modal (la que flota) */
+        .modal {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            display: none; /* Oculto por defecto */
             justify-content: center;
-            max-width: 1000px;
-            margin: 0 auto;
+            align-items: center;
+            z-index: 1000;
         }
-        /* Estilo de la tarjeta */
-        .tarjeta {
+        .modal-contenido {
             background: white;
+            padding: 20px;
             border-radius: 8px;
-            padding: 15px;
-            width: 220px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            width: 90%;
+            max-width: 400px;
+            position: relative;
+            text-align: left;
         }
-        .tarjeta h3 {
-            margin: 0 0 10px 0;
-            font-size: 1.1rem;
-            color: #222;
-        }
-        .precio {
-            font-weight: bold;
-            color: #27ae60;
-            margin-bottom: 10px;
-        }
-        /* Contenedor de los botones de colores */
-        .grupo-colores {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-            margin-bottom: 15px;
-        }
-        /* Botón de color normal */
-        .btn-color {
-            background-color: #e0e0e0;
-            border: 1px solid #ccc;
-            padding: 5px 8px;
-            font-size: 0.8rem;
-            border-radius: 4px;
+        .cerrar-modal {
+            position: absolute;
+            top: 10px; right: 15px;
             cursor: pointer;
-        }
-        .btn-color:hover:not(:disabled) {
-            background-color: #d0d0d0;
-        }
-        /* Estilo cuando el color no tiene stock */
-        .btn-color:disabled {
-            background-color: #f8d7da;
-            color: #721c24;
-            border-color: #f5c6cb;
-            text-decoration: line-through;
-            cursor: not-allowed;
-            opacity: 0.6;
-        }
-        /* Botón de compra general */
-        .btn-comprar {
-            background-color: #25d366;
-            color: white;
-            border: none;
-            padding: 8px;
-            border-radius: 4px;
-            cursor: pointer;
+            font-size: 24px;
             font-weight: bold;
-            text-align: center;
         }
-        .btn-comprar:hover {
-            background-color: #1ebe57;
+        .btn-opciones {
+            background: #3498db; color: white; border: none; padding: 8px 12px;
+            border-radius: 4px; cursor: pointer; width: 100%;
         }
     </style>
 </head>
 <body>
 
-    <h1>Catálogo de Útiles</h1>
+    <h1>Mi Catálogo de Productos</h1>
     
-    <!-- Aquí es donde JavaScript inyectará las tarjetas -->
-    <div id="contenedor-productos">Cargando productos...</div>
+    <!-- Aquí es donde JavaScript dibujará las tarjetas de tus productos -->
+    <div id="contenedor-catalogo" class="catalogo"></div>
 
+    <!-- VENTANA MODAL (Oculta hasta que hacen clic en un producto) -->
+    <div id="modal-producto" class="modal">
+        <div class="modal-contenido">
+            <span class="cerrar-modal" onclick="cerrarModal()">&times;</span>
+            <h2 id="modal-titulo">Nombre</h2>
+            
+            <img id="modal-imagen" src="" alt="Imagen del producto" style="width: 100%; height: 200px; object-fit: contain;">
+            
+            <p id="modal-precio" class="precio"></p>
+
+            <!-- Menú desplegable para los 20+ colores -->
+            <label for="select-color"><strong>Color:</strong></label><br>
+            <select id="select-color" style="width: 100%; padding: 8px; margin: 5px 0 15px 0;"></select>
+
+            <!-- Selector de cantidad -->
+            <label for="input-cantidad"><strong>Cantidad:</strong></label><br>
+            <input type="number" id="input-cantidad" value="1" min="1" style="width: 100%; padding: 8px; margin: 5px 0 15px 0;">
+
+            <!-- Botón final -->
+            <button style="background: #25d366; color: white; border: none; padding: 10px; width: 100%; border-radius: 4px; font-weight: bold; cursor: pointer;">
+                Pedir por WhatsApp
+            </button>
+        </div>
+    </div>
+
+    <!-- EL CEREBRO (JavaScript) -->
     <script>
-        // Función para cargar el archivo productos.json
-        async function cargarCatalogo() {
-            try {
-                // Realiza la petición al archivo JSON que subiste al repositorio
-                const respuesta = await fetch('productos.json');
-                if (!respuesta.ok) throw new Error('No se pudo cargar el archivo JSON');
+        let listaProductos = [];
+
+        // 1. Cargar el archivo productos.json al abrir la página
+        fetch('productos.json')
+            .then(respuesta => respuesta.json())
+            .then(datos => {
+                listaProductos = datos;
+                mostrarCatalogo(listaProductos);
+            })
+            .catch(error => console.error('Hubo un error cargando los productos:', error));
+
+        // 2. Dibujar las tarjetas limpias en la página principal
+        function mostrarCatalogo(productos) {
+            const contenedor = document.getElementById('contenedor-catalogo');
+            contenedor.innerHTML = '';
+
+            productos.forEach((producto, index) => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = 'tarjeta';
                 
-                const productos = await respuesta.json();
-                const contenedor = document.getElementById('contenedor-productos');
+                tarjeta.innerHTML = `
+                    <img src="${producto.imagen}" alt="${producto.nombre}">
+                    <h3>${producto.nombre}</h3>
+                    <div class="precio">S/ ${producto.precio.toFixed(2)}</div>
+                    <button class="btn-opciones" onclick="abrirModal(${index})">Ver opciones</button>
+                `;
                 
-                // Limpia el mensaje de "Cargando..."
-                contenedor.innerHTML = '';
-
-                // Recorre cada producto del archivo JSON
-                productos.forEach(producto => {
-                    // Crea el elemento visual de la tarjeta
-                    const tarjeta = document.createElement('div');
-                    tarjeta.className = 'tarjeta';
-
-                    // Construye los botones de colores de forma dinámica
-                    let botonesColoresHTML = '<div class="grupo-colores">';
-                    producto.colores.forEach(color => {
-                        // Revisa si el color actual está dentro de la lista de colores sin stock
-                        const estaAgotado = producto.colores_sin_stock.includes(color);
-                        
-                        // Si está agotado, agregamos el atributo 'disabled'
-                        botonesColoresHTML += `
-                            <button class="btn-color" ${estaAgotado ? 'disabled' : ''}>
-                                ${color} ${estaAgotado ? '(Agotado)' : ''}
-                            </button>
-                        `;
-                    });
-                    botonesColoresHTML += '</div>';
-
-                    // Rellena el contenido interno de la tarjeta
-                    tarjeta.innerHTML = `
-                        <div>
-                            <img src="${producto.imagen}" alt="${producto.nombre}" style="width:100%; height:150px; object-fit: cover; border-radius: 4px; margin-bottom: 8px;">
-                            <h3>${producto.nombre}</h3>
-                            <div class="precio">S/ ${producto.precio.toFixed(2)}</div>
-                            ${botonesColoresHTML}
-                        </div>
-                        <button class="btn-comprar" onclick="alert('Comprar ${producto.nombre}')">Pedir por WhatsApp</button>
-                    `;
-
-                    // Agrega la tarjeta completa al contenedor principal de la página
-                    contenedor.appendChild(tarjeta);
-                });
-
-            } catch (error) {
-                console.error('Error:', error);
-                document.getElementById('contenedor-productos').innerHTML = '<p>Hubo un error al cargar el catálogo.</p>';
-            }
+                contenedor.appendChild(tarjeta);
+            });
         }
 
-        // Ejecuta la función al cargar la página
-        cargarCatalogo();
-    </script>
+        // 3. Abrir el modal y rellenarlo con la información del producto seleccionado
+        function abrirModal(index) {
+            const producto = listaProductos[index];
 
+            document.getElementById('modal-titulo').innerText = producto.nombre;
+            document.getElementById('modal-imagen').src = producto.imagen;
+            document.getElementById('modal-precio').innerText = `S/ ${producto.precio.toFixed(2)}`;
+
+            // Llenar el menú desplegable con los colores (aquí entran tus 20+ colores sin ocupar espacio)
+            const selectColor = document.getElementById('select-color');
+            selectColor.innerHTML = ''; // Limpiar colores anteriores
+            
+            producto.colores.forEach(color => {
+                let opcion = document.createElement('option');
+                opcion.value = color;
+                opcion.innerText = color;
+                selectColor.appendChild(opcion);
+            });
+
+            // Mostrar el modal cambiando su estilo a flex
+            document.getElementById('modal-producto').style.display = 'flex';
+        }
+
+        // 4. Cerrar el modal
+        function cerrarModal() {
+            document.getElementById('modal-producto').style.display = 'none';
+        }
+    </script>
 </body>
 </html>
