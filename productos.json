@@ -3,7 +3,7 @@
         "sku": "CUAD-01",
         "nombre": "Cuaderno cuadriculado 60gr 100 hojas",
         "marca": "Atlas",
-        "categorias": [
+        "subcategorias": [
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas cuadriculado.jpg",
@@ -75,7 +75,7 @@
         "sku": "CUAD-02",
         "nombre": "Cuaderno triple renglón 60gr 100 hojas",
         "marca": "Atlas",
-        "categorias": [
+        "subcategorias": [
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas t renglon.jpg",
@@ -147,7 +147,7 @@
         "sku": "CUAD-03",
         "nombre": "Cuaderno rayado 60gr 100 hojas",
         "marca": "Atlas",
-        "categorias": [
+        "subcategorias": [
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas rayado.jpg",
