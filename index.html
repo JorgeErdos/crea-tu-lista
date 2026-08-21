@@ -134,11 +134,9 @@
     </section>
 
     <!-- SCRIPTS DE FUNCIONALIDAD -->
-    <!-- SCRIPTS DE FUNCIONALIDAD -->
     <script>
         let todosLosProductos = [];
     
-        // Diccionario que define qué subcategorías pertenecen a cada categoría principal (los círculos)
         const mapaCategorias = {
             "Útiles": ["Cuadernos", "Lapiceros", "Geometría", "Borradores"],
             "Arte y Manualidades": ["Pinturas", "Pinceles", "Lápices de colores"],
@@ -153,64 +151,78 @@
                 const response = await fetch('productos.json');
                 todosLosProductos = await response.json();
                 
-                // Al cargar la página, por defecto podemos mostrar todos o la vista inicial
-                renderizarProductos(todosLosProductos);
+                // Guardamos estado inicial en el historial
+                history.replaceState({ vista: 'inicio' }, '');
             } catch (error) {
                 console.error("Error al cargar productos:", error);
             }
         }
     
-        // 1. NIVEL 2: Mostrar las Subcategorías cuando se hace clic en una Categoría Principal (Círculo)
+        // 1. NIVEL 2: Mostrar Subcategorías al hacer clic en un Círculo Principal
         document.querySelectorAll('#categorias a').forEach(enlace => {
             enlace.addEventListener('click', (e) => {
                 e.preventDefault();
                 const categoriaPrincipal = e.currentTarget.querySelector('span').innerText.trim();
-                document.getElementById('titulo-seccion').innerText = `Categoría: ${categoriaPrincipal}`;
-    
-                const subcategoriasAsociadas = mapaCategorias[categoriaPrincipal] || [];
-                const grid = document.getElementById('grid-productos');
-                grid.innerHTML = '';
-    
-                if (subcategoriasAsociadas.length === 0) {
-                    grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">No hay subcategorías registradas en esta sección.</p>';
-                    return;
-                }
-    
-                // Renderizamos tarjetas bonitas para cada Subcategoría (Nivel Intermedio)
-                subcategoriasAsociadas.forEach(subcat => {
-                    const tarjetaSub = document.createElement('div');
-                    tarjetaSub.className = "bg-white rounded-xl shadow-sm border p-6 flex flex-col items-center justify-center cursor-pointer hover:shadow-md hover:border-emerald-600 transition group";
-                    tarjetaSub.innerHTML = `
-                        <div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mb-4 group-hover:bg-emerald-100 transition">
-                            <i class="fa-solid fa-folder-open text-2xl text-emerald-700"></i>
-                        </div>
-                        <h3 class="font-bold text-gray-800 text-center text-base group-hover:text-emerald-700 transition">${subcat}</h3>
-                        <span class="text-xs text-gray-400 mt-1">Ver productos</span>
-                    `;
-                    
-                    // Al hacer clic en la subcategoría, pasamos al Nivel 3 (Productos)
-                    tarjetaSub.addEventListener('click', () => {
-                        mostrarProductosDeSubcategoria(subcat);
-                    });
-    
-                    grid.appendChild(tarjetaSub);
-                });
+                
+                // Modificamos el historial para que el botón "Atrás" funcione
+                history.pushState({ vista: 'subcategorias', categoria: categoriaPrincipal }, '', `#${categoriaPrincipal.toLowerCase()}`);
+                
+                renderizarSubcategorias(categoriaPrincipal);
             });
         });
     
-        // 2. NIVEL 3: Mostrar los Productos filtrados por la Subcategoría seleccionada
+        function renderizarSubcategorias(categoriaPrincipal) {
+            document.getElementById('titulo-seccion').innerText = `Categoría: ${categoriaPrincipal}`;
+            
+            // Ocultamos elementos grandes en celular para centrar la vista en el catálogo
+            const banner = document.querySelector('section.bg-gradient-to-b');
+            if (banner) banner.style.display = 'none';
+
+            const subcategoriasAsociadas = mapaCategorias[categoriaPrincipal] || [];
+            const grid = document.getElementById('grid-productos');
+            grid.innerHTML = '';
+    
+            if (subcategoriasAsociadas.length === 0) {
+                grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">No hay subcategorías registradas en esta sección.</p>';
+                return;
+            }
+    
+            subcategoriasAsociadas.forEach(subcat => {
+                const tarjetaSub = document.createElement('div');
+                tarjetaSub.className = "bg-white rounded-xl shadow-sm border p-6 flex flex-col items-center justify-center cursor-pointer hover:shadow-md hover:border-emerald-600 transition group";
+                tarjetaSub.innerHTML = `
+                    <div class="w-16 h-16 rounded-full bg-emerald-50 flex items-center justify-center mb-4 group-hover:bg-emerald-100 transition">
+                        <i class="fa-solid fa-folder-open text-2xl text-emerald-700"></i>
+                    </div>
+                    <h3 class="font-bold text-gray-800 text-center text-base group-hover:text-emerald-700 transition">${subcat}</h3>
+                    <span class="text-xs text-gray-400 mt-1">Ver productos</span>
+                `;
+                
+                tarjetaSub.addEventListener('click', () => {
+                    history.pushState({ vista: 'productos', subcategoria: subcat }, '', `#sub-${subcat.toLowerCase()}`);
+                    mostrarProductosDeSubcategoria(subcat);
+                });
+    
+                grid.appendChild(tarjetaSub);
+            });
+
+            // Subimos la pantalla suavemente para que en celular se vea ordenado de inmediato
+            document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
+        }
+    
+        // 2. NIVEL 3: Mostrar Productos de la Subcategoría
         function mostrarProductosDeSubcategoria(subcatSeleccionada) {
             document.getElementById('titulo-seccion').innerText = `Subcategoría: ${subcatSeleccionada}`;
             
-            // Filtramos usando la lista 'subcategorias' del JSON y .some()/.includes() para múltiples valores
             const filtrados = todosLosProductos.filter(p => 
                 p.subcategorias && p.subcategorias.some(sc => sc.toLowerCase() === subcatSeleccionada.toLowerCase())
             );
             
             renderizarProductos(filtrados);
+            document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
         }
     
-        // Función base para renderizar tarjetas de productos (respetando tu estructura original)
+        // Renderizador de tarjetas de productos
         function renderizarProductos(productos) {
             const grid = document.getElementById('grid-productos');
             grid.innerHTML = ''; 
@@ -253,7 +265,6 @@
                 
                 grid.appendChild(tarjeta);
     
-                // Manejo de colores predeterminados o del JSON
                 const containerColores = document.getElementById(colorContainerId);
                 const labelColorSeleccionado = document.getElementById(`selected-color-${prod.sku || index}`);
                 const coloresDisponibles = prod.colores && prod.colores.length > 0 ? prod.colores : [
@@ -261,7 +272,6 @@
                     { nombre: "Azul", clase: "bg-blue-600" }
                 ];
     
-                // Renderizado simplificado de botones de color
                 coloresDisponibles.forEach((col, idx) => {
                     const btnColor = document.createElement('button');
                     btnColor.type = "button";
@@ -278,6 +288,24 @@
             });
         }
     
+        // 3. CONTROL DEL BOTÓN "ATRÁS" DEL NAVEGADOR
+        window.addEventListener('popstate', (event) => {
+            const estado = event.state;
+            const banner = document.querySelector('section.bg-gradient-to-b');
+
+            if (!estado || estado.vista === 'inicio') {
+                if (banner) banner.style.display = 'block';
+                document.getElementById('titulo-seccion').innerText = "Catálogo de Productos";
+                renderizarProductos(todosLosProductos);
+            } else if (estado.vista === 'subcategorias') {
+                if (banner) banner.style.display = 'none';
+                renderizarSubcategorias(estado.categoria);
+            } else if (estado.vista === 'productos') {
+                if (banner) banner.style.display = 'none';
+                mostrarProductosDeSubcategoria(estado.subcategoria);
+            }
+        });
+    
         function agregarAlCarrito(nombre, precio, inputId, colorContainerId) {
             const cantidad = document.getElementById(inputId).value;
             const colorSeleccionado = document.getElementById(colorContainerId.replace('colors-', 'selected-color-')).innerText;
@@ -286,5 +314,6 @@
     
         cargarCatalogo();
     </script>
+    
 </body>
 </html>
