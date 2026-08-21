@@ -134,8 +134,20 @@
     </section>
 
     <!-- SCRIPTS DE FUNCIONALIDAD -->
+    <!-- SCRIPTS DE FUNCIONALIDAD -->
     <script>
         let todosLosProductos = [];
+    
+        // 1. DICCIONARIO DE MAPEO: Relaciona la Categoría Principal (la de los círculos) 
+        // con las Subcategorías reales que escribes en tu Excel.
+        const mapaCategorias = {
+            "Útiles": ["Cuadernos", "Lapiceros", "Geometría", "Borradores"], // Agrega aquí tus subcategorías de útiles
+            "Arte y Manualidades": ["Pinturas", "Pinceles", "Lápices de colores"],
+            "Papelería": ["Hojas bond", "Cartulinas", "Sobres"],
+            "Juguetes": ["Didácticos", "Puzzles"],
+            "Lectura": ["Libros", "Cuentos"],
+            "Aseo": ["Jabones", "Papel toalla"]
+        };
     
         async function cargarCatalogo() {
             try {
@@ -163,17 +175,14 @@
                 const inputId = `qty-${prod.sku || index}`;
                 const colorContainerId = `colors-${prod.sku || index}`;
     
-                // Colores definidos con total opacidad para que no se invisibilicen
-                const coloresDisponibles = prod.colores || [
+                // Si el JSON trae colores específicos del Excel, los usa; si no, usa los por defecto
+                const coloresDisponibles = prod.colores && prod.colores.length > 0 ? prod.colores.map(c => ({
+                    nombre: c.nombre,
+                    // Si tienes clases CSS directas o colores personalizados, puedes manejarlos aquí
+                    clase: "bg-emerald-600" 
+                })) : [
                     { nombre: "Rojo", clase: "bg-red-600" },
-                    { nombre: "Azul", clase: "bg-blue-600" },
-                    { nombre: "Amarillo", clase: "bg-yellow-400" },
-                    { nombre: "Verde", clase: "bg-green-600" },
-                    { nombre: "Celeste", clase: "bg-sky-400" },
-                    { nombre: "Naranja", clase: "bg-orange-500" },
-                    { nombre: "Lila", clase: "bg-purple-500" },
-                    { nombre: "Rosado", clase: "bg-pink-400" },
-                    { nombre: "Blanco", clase: "bg-white border border-gray-400" }
+                    { nombre: "Azul", clase: "bg-blue-600" }
                 ];
     
                 tarjeta.innerHTML = `
@@ -186,7 +195,7 @@
                     
                     <!-- Selector de Colores Sólido -->
                     <div class="w-full mb-3 p-1">
-                        <p class="text-xs text-gray-600 font-medium mb-2 text-center">Color: <span id="selected-color-${prod.sku || index}" class="font-bold text-emerald-700">Rojo</span></p>
+                        <p class="text-xs text-gray-600 font-medium mb-2 text-center">Color: <span id="selected-color-${prod.sku || index}" class="font-bold text-emerald-700">Seleccionar</span></p>
                         <div class="flex flex-wrap justify-center gap-2" id="${colorContainerId}"></div>
                     </div>
     
@@ -207,47 +216,62 @@
                 const containerColores = document.getElementById(colorContainerId);
                 const labelColorSeleccionado = document.getElementById(`selected-color-${prod.sku || index}`);
                 
-                coloresDisponibles.forEach((col, idx) => {
-                    const btnColor = document.createElement('button');
-                    btnColor.type = "button";
-                    // Forzamos tamaño visible y opacidad clara
-                    btnColor.className = `w-6 h-6 rounded-full ${col.clase} focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
-                    btnColor.title = col.nombre;
-                    
-                    btnColor.onclick = () => {
-                        containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
-                        btnColor.classList.add('ring-2', 'ring-emerald-600');
-                        labelColorSeleccionado.innerText = col.nombre;
-                    };
-    
-                    containerColores.appendChild(btnColor);
-                });
+                // Renderizar variantes de color con stock real si vienen del JSON
+                const listaColoresReal = prod.colores || [];
+                if (listaColoresReal.length > 0) {
+                    labelColorSeleccionado.innerText = listaColoresReal[0].nombre;
+                    listaColoresReal.forEach((col, idx) => {
+                        const btnColor = document.createElement('button');
+                        btnColor.type = "button";
+                        btnColor.className = `px-2 py-1 text-xs rounded border ${idx === 0 ? 'bg-emerald-700 text-white border-emerald-700' : 'bg-gray-100 text-gray-700 border-gray-300'} transition`;
+                        btnColor.innerText = `${col.nombre} (${col.stock})`;
+                        
+                        btnColor.onclick = () => {
+                            containerColores.querySelectorAll('button').forEach(b => {
+                                b.classList.remove('bg-emerald-700', 'text-white', 'border-emerald-700');
+                                b.classList.add('bg-gray-100', 'text-gray-700', 'border-gray-300');
+                            });
+                            btnColor.classList.remove('bg-gray-100', 'text-gray-700', 'border-gray-300');
+                            btnColor.classList.add('bg-emerald-700', 'text-white', 'border-emerald-700');
+                            labelColorSeleccionado.innerText = col.nombre;
+                        };
+                        containerColores.appendChild(btnColor);
+                    });
+                } else {
+                    containerColores.innerHTML = '<span class="text-xs text-gray-400">Sin opciones de color</span>';
+                    labelColorSeleccionado.innerText = 'Único';
+                }
             });
         }
     
+        // 2. FILTRADO INTELIGENTE USANDO EL DICCIONARIO Y LAS SUBCATEGORÍAS
         document.querySelectorAll('#categorias a').forEach(enlace => {
             enlace.addEventListener('click', (e) => {
                 e.preventDefault();
-                const categoriaSeleccionada = e.currentTarget.querySelector('span').innerText.trim();
-                document.getElementById('titulo-seccion').innerText = `Catálogo: ${categoriaSeleccionada}`;
+                const categoriaPrincipal = e.currentTarget.querySelector('span').innerText.trim();
+                document.getElementById('titulo-seccion').innerText = `Catálogo: ${categoriaPrincipal}`;
     
-                if (categoriaSeleccionada === "Útiles") {
-                    renderizarProductos(todosLosProductos);
-                } else {
-                    const filtrados = todosLosProductos.filter(p => 
-                        p.categorias && p.categorias.some(cat => cat.toLowerCase() === categoriaSeleccionada.toLowerCase())
-                    );
-                    renderizarProductos(filtrados);
-                }
+                // Obtenemos las subcategorías asociadas a esta categoría principal desde el diccionario
+                const subcategoriasPermitidas = mapaCategorias[categoriaPrincipal] || [];
+    
+                // Filtramos usando 'subcategorias' del JSON y permitiendo múltiples valores (.some / .includes)
+                const filtrados = todosLosProductos.filter(p => 
+                    p.subcategorias && p.subcategorias.some(subCat => 
+                        subcategoriasPermitidas.some(perm => perm.toLowerCase() === subCat.toLowerCase())
+                    )
+                );
+                
+                renderizarProductos(filtrados);
             });
         });
     
         function agregarAlCarrito(nombre, precio, inputId, colorContainerId) {
             const cantidad = document.getElementById(inputId).value;
             const colorSeleccionado = document.getElementById(colorContainerId.replace('colors-', 'selected-color-')).innerText;
-            alert(`¡Agregado al carrito!\n• Producto: ${nombre}\n• Color: ${colorSeleccionado}\n• Cantidad: ${cantidad}`);
+            alert(`¡Agregado al carrito!\n• Producto: ${nombre}\n• Color/Opción: ${colorSeleccionado}\n• Cantidad: ${cantidad}`);
         }
     
+        // Cargar catálogo al iniciar la página
         cargarCatalogo();
     </script>
 </body>
