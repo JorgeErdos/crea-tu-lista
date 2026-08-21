@@ -224,79 +224,92 @@
     
         // Renderizador de tarjetas de productos
         function renderizarProductos(productos) {
-            const grid = document.getElementById('grid-productos');
-            grid.innerHTML = ''; 
-    
-            if (productos.length === 0) {
-                grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">No hay productos disponibles en esta subcategoría.</p>';
-                return;
-            }
-    
-            productos.forEach((prod, index) => {
-                const tarjeta = document.createElement('div');
-        
-                // 1. AQUÍ APLICAMOS LA ESTRUCTURA UNIFORME (h-full y flexbox)
-                tarjeta.className = "bg-white rounded-xl shadow-sm border p-4 flex flex-col h-full justify-between hover:shadow-md transition";
-                
-                const inputId = `qty-${prod.sku || index}`;
-                const colorContainerId = `colors-${prod.sku || index}`;
-        
-                tarjeta.innerHTML = `
-                    <!-- Parte Superior: Imagen y Marca -->
-                    <div>
-                        <div class="w-full h-48 mb-3 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
-                            <img src="${prod.imagen_principal}" alt="${prod.nombre}" class="h-full object-contain p-2">
-                        </div>
-                        <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">${prod.marca || 'Atlas'}</span>
-                        
-                        <!-- 2. AQUÍ LIMITAMOS EL TÍTULO A 2 LÍNEAS (line-clamp-2) -->
-                        <h3 class="font-medium text-gray-800 text-sm line-clamp-2 mt-2">${prod.nombre}</h3>
-                    </div>
-        
-                    <!-- Parte Central: Precios y Variantes -->
-                    <div class="my-3">
-                        <p class="font-bold text-lg text-gray-900">S/ ${prod.precio_regular.toFixed(2)}</p>
-                        <div class="mt-2 max-h-20 overflow-y-auto" id="${colorContainerId}"></div>
-                    </div>
-        
-                    <!-- 3. AQUÍ FORZAMOS EL BOTÓN AL FONDO (mt-auto) -->
-                    <div class="mt-auto pt-2 border-t border-gray-100">
-                        <div class="flex items-center space-x-2 mb-2 justify-center">
-                            <span class="text-xs text-gray-500 font-medium">Cant:</span>
-                            <input type="number" min="1" value="1" id="${inputId}" class="w-16 border rounded-lg p-1 text-center text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none">
-                        </div>
-                        
-                        <button onclick="agregarAlCarrito('${prod.nombre}', ${prod.precio_regular}, '${inputId}', '${colorContainerId}')" 
-                                class="bg-emerald-700 text-white w-full py-2 rounded-lg hover:bg-emerald-800 transition text-sm font-medium">
-                            Agregar al Carrito
-                        </button>
-                    </div>
-                `;
-                
-                grid.appendChild(tarjeta);
-    
-                const containerColores = document.getElementById(colorContainerId);
-                const labelColorSeleccionado = document.getElementById(`selected-color-${prod.sku || index}`);
-                const coloresDisponibles = prod.colores && prod.colores.length > 0 ? prod.colores : [
-                    { nombre: "Rojo", clase: "bg-red-600" },
-                    { nombre: "Azul", clase: "bg-blue-600" }
-                ];
-    
-                coloresDisponibles.forEach((col, idx) => {
-                    const btnColor = document.createElement('button');
-                    btnColor.type = "button";
-                    btnColor.className = `w-6 h-6 rounded-full ${col.clase || 'bg-emerald-600'} focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
-                    btnColor.title = col.nombre;
-                    
-                    btnColor.onclick = () => {
-                        containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
-                        btnColor.classList.add('ring-2', 'ring-emerald-600');
-                        labelColorSeleccionado.innerText = col.nombre;
-                    };
-                    containerColores.appendChild(btnColor);
-                });
-            });
+        const grid = document.getElementById('grid-productos');
+        grid.innerHTML = ''; 
+
+        if (productos.length === 0) {
+            grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">No hay productos disponibles en esta subcategoría.</p>';
+            return;
         }
+
+        productos.forEach((prod, index) => {
+            const tarjeta = document.createElement('div');
+            // Tarjeta compacta, equilibrada y con altura uniforme
+            tarjeta.className = "bg-white rounded-xl shadow-sm border p-4 flex flex-col h-full justify-between hover:shadow-md transition";
+            
+            const inputId = `qty-${prod.sku || index}`;
+            const colorContainerId = `colors-${prod.sku || index}`;
+            const imgId = `img-${prod.sku || index}`;
+            const labelColorId = `selected-color-${prod.sku || index}`;
+
+            tarjeta.innerHTML = `
+                <!-- Parte Superior: Imagen y Marca -->
+                <div>
+                    <div class="w-full h-44 mb-3 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
+                        <img id="${imgId}" src="${prod.imagen_principal}" alt="${prod.nombre}" class="h-full object-contain p-2 transition-all duration-300">
+                    </div>
+                    <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">${prod.marca || 'Atlas'}</span>
+                    <h3 class="font-medium text-gray-800 text-sm line-clamp-2 mt-2">${prod.nombre}</h3>
+                </div>
+
+                <!-- Parte Central: Precios y Selector de Colores con altura controlada -->
+                <div class="my-3">
+                    <p class="font-bold text-lg text-gray-900 mb-1">S/ ${prod.precio_regular.toFixed(2)}</p>
+                    <p class="text-xs text-gray-500 mb-1.5">Color: <span id="${labelColorId}" class="font-bold text-gray-700">Selecciona</span></p>
+                    <div class="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto p-1" id="${colorContainerId}"></div>
+                </div>
+
+                <!-- Parte Inferior: Cantidad y Botón en la misma línea (Compacto) -->
+                <div class="mt-auto pt-3 border-t border-gray-100 flex items-center gap-2">
+                    <input type="number" min="1" value="1" id="${inputId}" class="w-16 h-10 border rounded-lg text-center text-base font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                    
+                    <button onclick="agregarAlCarrito('${prod.nombre}', ${prod.precio_regular}, '${inputId}', '${labelColorId}')" 
+                            class="flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium flex items-center justify-center gap-1 shadow-sm">
+                        <i class="fa-solid fa-cart-shopping text-xs"></i> Agregar
+                    </button>
+                </div>
+            `;
+            
+            grid.appendChild(tarjeta);
+
+            // Renderizado de colores reales
+            const containerColores = document.getElementById(colorContainerId);
+            const labelColorSeleccionado = document.getElementById(labelColorId);
+            const imagenProducto = document.getElementById(imgId);
+
+            // Si el producto no trae colores definidos en el JSON, usamos una lista por defecto o vacía
+            const coloresDisponibles = prod.colores && prod.colores.length > 0 ? prod.colores : [
+                { nombre: "Rojo", clase: "bg-red-600", imagen: prod.imagen_principal },
+                { nombre: "Azul", clase: "bg-blue-600", imagen: prod.imagen_principal },
+                { nombre: "Amarillo", clase: "bg-yellow-400", imagen: prod.imagen_principal }
+            ];
+
+            // Seleccionar el primer color por defecto
+            if (coloresDisponibles.length > 0) {
+                labelColorSeleccionado.innerText = coloresDisponibles[0].nombre;
+            }
+
+            coloresDisponibles.forEach((col, idx) => {
+                const btnColor = document.createElement('button');
+                btnColor.type = "button";
+                // Círculos pequeños y limpios (w-5 h-5)
+                btnColor.className = `w-5 h-5 rounded-full ${col.clase || 'bg-gray-400'} focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm border border-white`;
+                btnColor.title = col.nombre;
+                
+                btnColor.onclick = () => {
+                    containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
+                    btnColor.classList.add('ring-2', 'ring-emerald-600');
+                    labelColorSeleccionado.innerText = col.nombre;
+                    
+                    // Si tu JSON incluye una imagen específica para esta variante de color, la cambiamos aquí:
+                    if (col.imagen) {
+                        imagenProducto.src = col.imagen;
+                    }
+                };
+                containerColores.appendChild(btnColor);
+            });
+        });
+    }
     
         // 3. CONTROL DEL BOTÓN "ATRÁS" DEL NAVEGADOR
         window.addEventListener('popstate', (event) => {
@@ -315,10 +328,10 @@
                 mostrarProductosDeSubcategoria(estado.subcategoria);
             }
         });
-    
-        function agregarAlCarrito(nombre, precio, inputId, colorContainerId) {
+
+        function agregarAlCarrito(nombre, precio, inputId, labelColorId) {
             const cantidad = document.getElementById(inputId).value;
-            const colorSeleccionado = document.getElementById(colorContainerId.replace('colors-', 'selected-color-')).innerText;
+            const colorSeleccionado = document.getElementById(labelColorId).innerText;
             alert(`¡Agregado al carrito!\n• Producto: ${nombre}\n• Color: ${colorSeleccionado}\n• Cantidad: ${cantidad}`);
         }
     
