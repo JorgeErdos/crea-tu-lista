@@ -163,7 +163,7 @@
                 const inputId = `qty-${prod.sku || index}`;
                 const colorContainerId = `colors-${prod.sku || index}`;
     
-                // Lista clara de colores con clases de fondo de Tailwind seguras
+                // Colores definidos con total opacidad para que no se invisibilicen
                 const coloresDisponibles = prod.colores || [
                     { nombre: "Rojo", clase: "bg-red-600" },
                     { nombre: "Azul", clase: "bg-blue-600" },
@@ -171,9 +171,9 @@
                     { nombre: "Verde", clase: "bg-green-600" },
                     { nombre: "Celeste", clase: "bg-sky-400" },
                     { nombre: "Naranja", clase: "bg-orange-500" },
-                    { nombre: "Lila", clase: "bg-purple-400" },
+                    { nombre: "Lila", clase: "bg-purple-500" },
                     { nombre: "Rosado", clase: "bg-pink-400" },
-                    { nombre: "Blanco", clase: "bg-white border border-gray-300" }
+                    { nombre: "Blanco", clase: "bg-white border border-gray-400" }
                 ];
     
                 tarjeta.innerHTML = `
@@ -184,10 +184,10 @@
                     <h3 class="font-medium text-gray-800 text-center text-sm line-clamp-2 mb-2">${prod.nombre}</h3>
                     <p class="font-bold text-lg text-gray-900 mb-2">S/ ${prod.precio_regular.toFixed(2)}</p>
                     
-                    <!-- Selector de Colores corregido -->
-                    <div class="w-full mb-3 bg-gray-50 p-2.5 rounded-lg border border-gray-100">
+                    <!-- Selector de Colores Sólido -->
+                    <div class="w-full mb-3 p-1">
                         <p class="text-xs text-gray-600 font-medium mb-2 text-center">Color: <span id="selected-color-${prod.sku || index}" class="font-bold text-emerald-700">Rojo</span></p>
-                        <div class="flex flex-wrap justify-center gap-1.5" id="${colorContainerId}"></div>
+                        <div class="flex flex-wrap justify-center gap-2" id="${colorContainerId}"></div>
                     </div>
     
                     <!-- Selector de cantidad -->
@@ -204,15 +204,14 @@
                 
                 grid.appendChild(tarjeta);
     
-                // Generar los botones de colores de forma correcta
                 const containerColores = document.getElementById(colorContainerId);
                 const labelColorSeleccionado = document.getElementById(`selected-color-${prod.sku || index}`);
                 
                 coloresDisponibles.forEach((col, idx) => {
                     const btnColor = document.createElement('button');
                     btnColor.type = "button";
-                    // Añadimos dimensiones fijas (w-5 h-5) explícitas para evitar que colapsen
-                    btnColor.className = `w-5 h-5 rounded-full ${col.clase} focus:outline-none ring-offset-1 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
+                    // Forzamos tamaño visible y opacidad clara
+                    btnColor.className = `w-6 h-6 rounded-full ${col.clase} focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
                     btnColor.title = col.nombre;
                     
                     btnColor.onclick = () => {
