@@ -1058,5 +1058,93 @@
         "palabras_clave": [],
         "descripcion_corta": "",
         "etiqueta": null
+    },
+    {
+        "sku": "CUAD-51",
+        "nombre": "Caja de Cuadernos cuadriculados",
+        "marca": "Atlas",
+        "subcategorias": [
+            "Cuadernos"
+        ],
+        "imagen_principal": "nan",
+        "stock_general": 0,
+        "colores": [
+            {
+                "nombre": "Surtido",
+                "stock": 5,
+                "imagen": ""
+            }
+        ],
+        "precio_regular": 0.0,
+        "precio_oferta": null,
+        "palabras_clave": [],
+        "descripcion_corta": "",
+        "etiqueta": null
+    },
+    {
+        "sku": "CUAD-52",
+        "nombre": "Caja de Cuadernos cuadriculados",
+        "marca": "Arcoiris",
+        "subcategorias": [
+            "Cuadernos"
+        ],
+        "imagen_principal": "nan",
+        "stock_general": 0,
+        "colores": [
+            {
+                "nombre": "Surtido",
+                "stock": 5,
+                "imagen": ""
+            }
+        ],
+        "precio_regular": 0.0,
+        "precio_oferta": null,
+        "palabras_clave": [],
+        "descripcion_corta": "",
+        "etiqueta": null
+    },
+    {
+        "sku": "CUAD-53",
+        "nombre": "Caja de Cuadernos cuadriculados",
+        "marca": "Alpha Scool",
+        "subcategorias": [
+            "Cuadernos"
+        ],
+        "imagen_principal": "imagenes/Cuadernos/Caja cuadernos Alpha Scool.jpg",
+        "stock_general": 0,
+        "colores": [
+            {
+                "nombre": "Surtido",
+                "stock": 5,
+                "imagen": ""
+            }
+        ],
+        "precio_regular": 0.0,
+        "precio_oferta": null,
+        "palabras_clave": [],
+        "descripcion_corta": "",
+        "etiqueta": null
+    },
+    {
+        "sku": "CUAD-54",
+        "nombre": "Caja de Cuadernos cuadriculados",
+        "marca": "Alpha Scool S",
+        "subcategorias": [
+            "Cuadernos"
+        ],
+        "imagen_principal": "nan",
+        "stock_general": 0,
+        "colores": [
+            {
+                "nombre": "Surtido",
+                "stock": 5,
+                "imagen": ""
+            }
+        ],
+        "precio_regular": 0.0,
+        "precio_oferta": null,
+        "palabras_clave": [],
+        "descripcion_corta": "",
+        "etiqueta": null
     }
 ]
