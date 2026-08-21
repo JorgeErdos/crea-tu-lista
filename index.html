@@ -124,59 +124,76 @@
     </section>
 
     <!-- 4. SECCIÓN DE CATÁLOGO (DONDE SE CARGARÁN LOS PRODUCTOS DEL JSON) -->
+    <!-- 4. SECCIÓN DE CATÁLOGO ACTUALIZADA -->
     <section id="catalogo" class="py-12 max-w-6xl mx-auto px-4">
         <h2 id="titulo-seccion" class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Catálogo de Productos</h2>
         
-        <!-- Grid dinámico donde JavaScript inyectará las tarjetas -->
         <div id="grid-productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Aquí aparecerán tus cuadernos automáticamente -->
+            <!-- Los productos se cargarán aquí -->
         </div>
     </section>
 
     <!-- SCRIPTS DE FUNCIONALIDAD -->
     <script>
-        // 1. Funcionalidad del Menú Móvil
-        const btnMenu = document.getElementById('menu-movil-btn');
-        const menuMovil = document.getElementById('menu-movil');
-
-        btnMenu.addEventListener('click', () => {
-            menuMovil.classList.toggle('hidden');
-        });
-
-        // 2. Carga automática de productos desde el JSON
+        let todosLosProductos = []; // Guardaremos aquí los productos cargados
+    
+        // 1. Cargar productos y renderizar
         async function cargarCatalogo() {
-            try {
-                const response = await fetch('productos.json');
-                const productos = await response.json();
-                const grid = document.getElementById('grid-productos');
-
-                grid.innerHTML = ''; // Limpiar por si acaso
-
-                productos.forEach(prod => {
-                    const tarjeta = document.createElement('div');
-                    tarjeta.className = "bg-white rounded-xl shadow-sm border border-gray-100 p-4 flex flex-col items-center hover:shadow-md transition";
-                    
-                    tarjeta.innerHTML = `
-                        <div class="w-full h-48 mb-4 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
-                            <img src="${prod.imagen_principal}" alt="${prod.nombre}" class="h-full object-contain p-2">
-                        </div>
-                        <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full mb-2">${prod.marca || 'Genérico'}</span>
-                        <h3 class="font-medium text-gray-800 text-center text-sm line-clamp-2 mb-3">${prod.nombre}</h3>
-                        <div class="mt-auto w-full flex items-center justify-between">
-                            <span class="text-lg font-bold text-gray-900">S/ ${prod.precio_regular.toFixed(2)}</span>
-                            <button class="bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg hover:bg-emerald-800 transition font-medium">
-                                Ver Opciones
-                            </button>
-                        </div>
-                    `;
-                    grid.appendChild(tarjeta);
-                });
-            } catch (error) {
-                console.error("No se pudo cargar el archivo productos.json:", error);
-            }
+            const response = await fetch('productos.json');
+            todosLosProductos = await response.json();
+            renderizarProductos(todosLosProductos);
         }
-
-        // Ejecutar la función al abrir la página
+    
+        // 2. Función para pintar las tarjetas
+        function renderizarProductos(productos) {
+            const grid = document.getElementById('grid-productos');
+            grid.innerHTML = ''; 
+    
+            productos.forEach(prod => {
+                const tarjeta = document.createElement('div');
+                tarjeta.className = "bg-white rounded-xl shadow-sm border p-4 flex flex-col items-center";
+                
+                tarjeta.innerHTML = `
+                    <img src="${prod.imagen_principal}" alt="${prod.nombre}" class="h-40 object-contain mb-4">
+                    <h3 class="font-medium text-sm text-center mb-2">${prod.nombre}</h3>
+                    <p class="font-bold text-lg mb-3">S/ ${prod.precio_regular.toFixed(2)}</p>
+                    
+                    <!-- Selector de cantidad -->
+                    <div class="flex items-center space-x-2 mb-3">
+                        <input type="number" min="1" value="1" id="qty-${prod.id}" class="w-16 border rounded p-1 text-center">
+                    </div>
+                    
+                    <button onclick="agregarAlCarrito('${prod.nombre}', ${prod.precio_regular}, 'qty-${prod.id}')" 
+                            class="bg-emerald-700 text-white w-full py-2 rounded-lg hover:bg-emerald-800 transition">
+                        Agregar al Carrito
+                    </button>
+                `;
+                grid.appendChild(tarjeta);
+            });
+        }
+    
+        // 3. Lógica de filtrado
+        document.querySelectorAll('#categorias a').forEach(enlace => {
+            enlace.addEventListener('click', (e) => {
+                e.preventDefault();
+                const categoria = e.currentTarget.querySelector('span').innerText;
+                
+                if (categoria === "Útiles") {
+                    renderizarProductos(todosLosProductos); // Mostrar todo o filtrar por categoría
+                } else {
+                    const filtrados = todosLosProductos.filter(p => p.categoria === categoria);
+                    renderizarProductos(filtrados);
+                }
+            });
+        });
+    
+        // 4. Función simple de agregar
+        function agregarAlCarrito(nombre, precio, inputId) {
+            const cantidad = document.getElementById(inputId).value;
+            alert(`Agregaste ${cantidad} unidad(es) de ${nombre} al carrito.`);
+            // Aquí luego conectaremos con el contador del carrito
+        }
+    
         cargarCatalogo();
     </script>
 </body>
