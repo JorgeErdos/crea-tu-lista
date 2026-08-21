@@ -1,30 +1,218 @@
 [
     {
-        "id": "prod_001",
-        "nombre": "Papel Lustre",
-        "categoria": "Papeles",
-        "precio": 0.5,
+        "sku": "CUAD-01",
+        "nombre": "Cuaderno cuadriculado 60gr 100 hojas",
+        "marca": "Atlas",
+        "categorias": [
+            "Cuadernos"
+        ],
+        "imagen_principal": "imagenes/Cuadernos/Atlas cuadriculado.jpg",
+        "stock_general": 0,
         "colores": [
-            "Fucsia",
-            "Amarillo Mostaza",
-            "Verde Petróleo",
-            "Azul"
+            {
+                "nombre": "Surtido",
+                "stock": 25,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Rojo",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Azul",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Amarillo",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Verde",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Verde limón",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Celeste",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Naranja",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Lila",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Rosado",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Blanco",
+                "stock": 10,
+                "imagen": ""
+            }
         ],
-        "colores_sin_stock": [
-            "Fucsia"
-        ],
-        "imagen": "imagenes/lustre azul.jpg"
+        "precio_regular": 4.5,
+        "precio_oferta": null,
+        "palabras_clave": [],
+        "descripcion_corta": "",
+        "etiqueta": null
     },
     {
-        "id": "prod_002",
-        "nombre": "Cuaderno Espiral",
-        "categoria": "Cuadernos",
-        "precio": 4.5,
-        "colores": [
-            "Negro",
-            "Rojo"
+        "sku": "CUAD-02",
+        "nombre": "Cuaderno triple renglón 60gr 100 hojas",
+        "marca": "Atlas",
+        "categorias": [
+            "Cuadernos"
         ],
-        "colores_sin_stock": [],
-        "imagen": "cuaderno.jpg"
+        "imagen_principal": "imagenes/Cuadernos/Atlas t renglon.jpg",
+        "stock_general": 0,
+        "colores": [
+            {
+                "nombre": "Surtido",
+                "stock": 25,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Rojo",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Azul",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Amarillo",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Verde",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Verde limón",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Celeste",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Naranja",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Lila",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Rosado",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Blanco",
+                "stock": 10,
+                "imagen": ""
+            }
+        ],
+        "precio_regular": 4.5,
+        "precio_oferta": null,
+        "palabras_clave": [],
+        "descripcion_corta": "",
+        "etiqueta": null
+    },
+    {
+        "sku": "CUAD-03",
+        "nombre": "Cuaderno rayado 60gr 100 hojas",
+        "marca": "Atlas",
+        "categorias": [
+            "Cuadernos"
+        ],
+        "imagen_principal": "imagenes/Cuadernos/Atlas rayado.jpg",
+        "stock_general": 0,
+        "colores": [
+            {
+                "nombre": "Surtido",
+                "stock": 25,
+                "imagen": "imagenes/Cuadernos/Atlas rayado.jpg"
+            },
+            {
+                "nombre": ", Rojo",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Azul",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Amarillo",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Verde",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Verde limón",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Celeste",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Naranja",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Lila",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Rosado",
+                "stock": 10,
+                "imagen": ""
+            },
+            {
+                "nombre": ", Blanco",
+                "stock": 10,
+                "imagen": ""
+            }
+        ],
+        "precio_regular": 4.5,
+        "precio_oferta": null,
+        "palabras_clave": [],
+        "descripcion_corta": "",
+        "etiqueta": null
     }
 ]
