@@ -341,6 +341,16 @@
             alert(`¡Agregado al carrito!\n• Producto: ${nombre}\n• Color: ${colorSeleccionado}\n• Cantidad: ${cantidad}`);
         }
 
+        function ajustarCantidad(inputId, cambio) {
+            const input = document.getElementById(inputId);
+            let valor = parseInt(input.value) + cambio;
+            
+            // Evitamos que la cantidad sea menor a 1
+            if (valor < 1) valor = 1;
+            
+            input.value = valor;
+        }
+
         function obtenerEstiloColor(nombreColor) {
             if (!nombreColor) return "background-color: #9ca3af; border: 1px solid #d1d5db;";
             
