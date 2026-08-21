@@ -148,7 +148,14 @@
     
         async function cargarCatalogo() {
             try {
-                const response = await fetch('productos.json');
+                // Agregamos un timestamp único (?t=...) para obligar al navegador a descargar el archivo nuevo
+                const timestamp = new Date().getTime();
+                const response = await fetch(`productos.json?t=${timestamp}`);
+                
+                if (!response.ok) {
+                    throw new Error('No se pudo cargar el archivo JSON');
+                }
+                
                 todosLosProductos = await response.json();
                 
                 // Guardamos estado inicial en el historial
