@@ -251,21 +251,27 @@
                         <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">${prod.marca || 'Atlas'}</span>
                         <h3 class="font-medium text-gray-800 text-sm line-clamp-2 mt-2">${prod.nombre}</h3>
                     </div>
-    
-                    <!-- Parte Central: Precios y Selector de Colores con altura controlada -->
+                
+                    <!-- Parte Central: Precios y Colores -->
                     <div class="my-3">
                         <p class="font-bold text-lg text-gray-900 mb-1">S/ ${prod.precio_regular.toFixed(2)}</p>
                         <p class="text-xs text-gray-500 mb-1.5">Color: <span id="${labelColorId}" class="font-bold text-gray-700">Selecciona</span></p>
                         <div class="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto p-1" id="${colorContainerId}"></div>
                     </div>
-    
-                    <!-- Parte Inferior: Cantidad y Botón en la misma línea (Compacto) -->
+                
+                    <!-- AQUÍ VA EL NUEVO BLOQUE QUE ACABAMOS DE CREAR -->
                     <div class="mt-auto pt-3 border-t border-gray-100 flex items-center gap-2">
-                        <input type="number" min="1" value="1" id="${inputId}" class="w-16 h-10 border rounded-lg text-center text-base font-semibold focus:ring-2 focus:ring-emerald-500 focus:outline-none">
+                        <!-- Grupo de +/- -->
+                        <div class="flex items-center border rounded-lg h-10 w-24">
+                            <button onclick="ajustarCantidad('${inputId}', -1)" class="w-8 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-emerald-700 rounded-l-lg">-</button>
+                            <input type="number" value="1" id="${inputId}" class="w-8 h-full text-center text-sm font-semibold focus:outline-none" readonly>
+                            <button onclick="ajustarCantidad('${inputId}', 1)" class="w-8 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-emerald-700 rounded-r-lg">+</button>
+                        </div>
                         
+                        <!-- Botón Agregar -->
                         <button onclick="agregarAlCarrito('${prod.nombre}', ${prod.precio_regular}, '${inputId}', '${labelColorId}')" 
-                                class="flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium flex items-center justify-center gap-1 shadow-sm">
-                            <i class="fa-solid fa-cart-shopping text-xs"></i> Agregar
+                                class="flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm">
+                            Agregar
                         </button>
                     </div>
                 `;
