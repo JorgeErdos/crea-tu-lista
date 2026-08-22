@@ -7,7 +7,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas cuadriculado.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -79,7 +79,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas t renglon.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -151,7 +151,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas rayado.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -223,7 +223,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Arcoiris cuadric.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -275,7 +275,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Arcoiris TR.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -327,7 +327,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Arcoiris rayado.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -379,7 +379,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha decroly.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -461,7 +461,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha 1x1.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -543,7 +543,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha 2x2.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -625,7 +625,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha triplekids.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -707,7 +707,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool cuadriculado.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -779,7 +779,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool triple renglon.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -851,7 +851,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool s cuadriculado.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -923,7 +923,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool s triple renglon.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -995,7 +995,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool s rayado.jpg",
-        "stock_general": "Si",
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -1078,7 +1078,7 @@
         "precio_regular": 0.0,
         "precio_oferta": null,
         "palabras_clave": [],
-        "descripcion_corta": "",
+        "descripcion_corta": "Caja x 25 cuadernos, colores surtidos",
         "etiqueta": null
     },
     {
@@ -1100,7 +1100,7 @@
         "precio_regular": 0.0,
         "precio_oferta": null,
         "palabras_clave": [],
-        "descripcion_corta": "",
+        "descripcion_corta": "Caja x 50 cuadernos, colores surtidos",
         "etiqueta": null
     },
     {
@@ -1122,7 +1122,7 @@
         "precio_regular": 0.0,
         "precio_oferta": null,
         "palabras_clave": [],
-        "descripcion_corta": "",
+        "descripcion_corta": "Caja x 25 cuadernos, colores surtidos",
         "etiqueta": null
     },
     {
@@ -1144,7 +1144,7 @@
         "precio_regular": 0.0,
         "precio_oferta": null,
         "palabras_clave": [],
-        "descripcion_corta": "",
+        "descripcion_corta": "Caja x 25 cuadernos, colores surtidos",
         "etiqueta": null
     },
     {
@@ -1159,7 +1159,7 @@
         "colores": [
             {
                 "nombre": "Surtido",
-                "stock": 0,
+                "stock": 10,
                 "imagen": ""
             },
             {
@@ -1169,7 +1169,7 @@
             },
             {
                 "nombre": "Azul",
-                "stock": 0,
+                "stock": 5,
                 "imagen": ""
             },
             {
@@ -1179,12 +1179,12 @@
             },
             {
                 "nombre": "Verde",
-                "stock": 0,
+                "stock": 2,
                 "imagen": ""
             },
             {
                 "nombre": "Celeste",
-                "stock": 0,
+                "stock": 3,
                 "imagen": ""
             },
             {
@@ -1202,12 +1202,12 @@
     {
         "sku": "CUAD-71",
         "nombre": "Cuaderno universitario A4 anillado",
-        "marca": "",
+        "marca": "Genérico",
         "subcategorias": [
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": null,
+        "stock_general": "No",
         "colores": [],
         "precio_regular": 0.0,
         "precio_oferta": null,
@@ -1218,12 +1218,12 @@
     {
         "sku": "CUAD-81",
         "nombre": "Cuaderno universitario A5 anillado",
-        "marca": "",
+        "marca": "Genérico",
         "subcategorias": [
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": null,
+        "stock_general": "No",
         "colores": [],
         "precio_regular": 0.0,
         "precio_oferta": null,
@@ -1239,7 +1239,7 @@
             "Blocks"
         ],
         "imagen_principal": "nan",
-        "stock_general": "SI",
+        "stock_general": null,
         "colores": [],
         "precio_regular": 5.0,
         "precio_oferta": 4.5,
