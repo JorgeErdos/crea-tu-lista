@@ -230,10 +230,10 @@
                 
                 const sku = prod.sku || `prod-${index}`;
                 const nombre = prod.nombre || "Producto sin nombre";
-                const marca = prod.marca || "Sin Marca";
+                const marca = prod.marca || "Atlas";
                 const precio = Number(prod.precio_regular || 0);
                 const imagen = prod.imagen_principal || "";
-                const descripcion = prod.descripcion_corta || ""; 
+                const descripcion = prod.descripcion_corta || prod.descripcion || ""; 
                 
                 const stockGeneral = prod.stock_general;
                 const estaDisponibleGeneral = (stockGeneral === "" || stockGeneral === null || stockGeneral === undefined || Number(stockGeneral) > 0);
@@ -244,6 +244,7 @@
                 const labelColorId = `selected-color-${sku}-${index}`;
                 const btnAgregarId = `btn-agregar-${sku}-${index}`;
                 const stockAvisoId = `stock-aviso-${sku}-${index}`;
+                const descId = `desc-${sku}-${index}`;
             
                 let textoBoton = "Agregar";
                 let claseBoton = "flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm";
@@ -260,16 +261,16 @@
                         <div class="w-full h-44 mb-3 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden relative">
                             <img id="${imgId}" src="${imagen}" alt="${nombre}" class="h-full object-contain p-2 transition-all duration-300" onerror="this.src='https://via.placeholder.com/150?text=Sin+Imagen'">
                             
-                            <!-- TOOLTIP DE DESCRIPCIÓN CORTA -->
+                            <!-- BOTÓN Y MENSAJE DE INFORMACIÓN POR CLIC -->
                             ${descripcion ? `
-                                <div class="absolute top-2 right-2 group/tip">
-                                    <span class="w-7 h-7 bg-white/90 backdrop-blur-sm border shadow-sm rounded-full flex items-center justify-center text-emerald-700 cursor-pointer hover:bg-emerald-50 transition">
+                                <div class="absolute top-2 right-2 z-20">
+                                    <button type="button" onclick="const d = document.getElementById('${descId}'); d.classList.toggle('hidden');" 
+                                            class="w-7 h-7 bg-white/90 backdrop-blur-sm border shadow-sm rounded-full flex items-center justify-center text-emerald-700 cursor-pointer hover:bg-emerald-50 transition focus:outline-none">
                                         <i class="fa-solid fa-info text-xs"></i>
-                                    </span>
-                                    <div class="absolute right-0 bottom-full mb-2 hidden group-hover/tip:block w-48 p-2.5 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-25 pointer-events-none text-left">
+                                    </button>
+                                    <div id="${descId}" class="hidden absolute right-0 top-9 w-48 p-2.5 bg-gray-900 text-white text-xs rounded-lg shadow-xl z-30 text-left">
                                         <p class="font-semibold text-emerald-400 mb-0.5">Detalles:</p>
                                         ${descripcion}
-                                        <div class="absolute top-full right-3 -mt-1 border-4 border-transparent border-t-gray-900"></div>
                                     </div>
                                 </div>
                             ` : ''}
@@ -327,7 +328,6 @@
                         btnColor.style.cssText = obtenerEstiloColor(nombreColor);
                         btnColor.title = `${nombreColor} (Stock: ${stockColor})`;
 
-                        // Evento click optimizado buscando el DOM por ID en tiempo de ejecución
                         btnColor.onclick = () => {
                             containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
                             btnColor.classList.add('ring-2', 'ring-emerald-600');
@@ -351,7 +351,6 @@
                         containerColores.appendChild(btnColor);
                     });
 
-                    // Inicializar estado por defecto con el primer color al cargar la tarjeta
                     if (primerColorValido) {
                         labelColorSeleccionado.innerText = primerColorValido.nombre;
                         const avisoStockInicial = document.getElementById(stockAvisoId);
