@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crea Tu Lista - Catálogo</title>
-    <!-- Tailwind CSS CDN para diseño rápido y responsivo -->
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -51,7 +51,7 @@
             </div>
         </div>
 
-        <!-- Menú desplegable para Celular (Oculto por defecto) -->
+        <!-- Menú desplegable para Celular -->
         <div id="menu-movil" class="hidden md:hidden bg-white border-t px-4 pt-2 pb-4 space-y-2">
             <a href="index.html" class="block py-2 text-emerald-700 font-semibold">Inicio</a>
             <a href="#categorias" class="block py-2 text-gray-600">Útiles</a>
@@ -66,12 +66,10 @@
     <!-- 2. SECCIÓN PRINCIPAL (HERO / BANNER) -->
     <section class="bg-gradient-to-b from-white to-gray-100 py-10 px-4 text-center">
         <div class="max-w-4xl mx-auto">
-            <!-- Imagen de Banner Principal -->
             <div class="rounded-2xl overflow-hidden shadow-md mb-8 bg-white p-4">
                 <img src="https://images.unsplash.com/photo-1513542789411-b6a5d4f31634?auto=format&fit=crop&q=80&w=1200" alt="Banner Papelería" class="w-full h-48 md:h-72 object-cover rounded-xl">
             </div>
 
-            <!-- Botón de Llamado a la Acción -->
             <a href="#catalogo" class="inline-flex items-center space-x-2 bg-emerald-700 hover:bg-emerald-800 text-white font-medium px-8 py-3.5 rounded-full shadow-lg transition transform hover:-translate-y-0.5">
                 <i class="fa-solid fa-sparkles"></i>
                 <span>VER CATÁLOGO</span>
@@ -79,7 +77,7 @@
         </div>
     </section>
 
-    <!-- 3. ACCESOS RÁPIDOS POR CATEGORÍAS (CÍRCULOS) -->
+    <!-- 3. ACCESOS RÁPIDOS POR CATEGORÍAS -->
     <section id="categorias" class="py-12 max-w-6xl mx-auto px-4">
         <h2 class="text-center text-xl font-bold text-gray-700 mb-8">Explora por Categorías</h2>
         
@@ -128,11 +126,11 @@
         <h2 id="titulo-seccion" class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Catálogo de Productos</h2>
         
         <div id="grid-productos" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            <!-- Los productos se cargarán aquí -->
+            <!-- Los productos se cargarán aquí automáticamente -->
         </div>
     </section>
 
-    <!-- SCRIPTS DE FUNCIONALIDAD -->
+    <!-- SCRIPT DE FUNCIONALIDAD -->
     <script>
         let todosLosProductos = [];
     
@@ -209,14 +207,14 @@
     
         function mostrarProductosDeSubcategoria(subcatSeleccionada) {
             document.getElementById('titulo-seccion').innerText = `Subcategoría: ${subcatSeleccionada}`;
-            const filtrados = todosLosProductos.filter(p => 
-                p.Subcategorías && p.Subcategorías.toLowerCase() === subcatSeleccionada.toLowerCase()
-            );
+            const filtrados = todosLosProductos.filter(p => {
+                if (!p.subcategorias) return false;
+                return p.subcategorias.some(sub => sub.toLowerCase() === subcatSeleccionada.toLowerCase());
+            });
             renderizarProductos(filtrados);
             document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
         }
     
-        // Renderizador de tarjetas adaptado con Stock General y Colores Dinámicos
         function renderizarProductos(productos) {
             const grid = document.getElementById('grid-productos');
             grid.innerHTML = ''; 
@@ -230,23 +228,27 @@
                 const tarjeta = document.createElement('div');
                 tarjeta.className = "bg-white rounded-xl shadow-sm border p-4 flex flex-col h-full justify-between hover:shadow-md transition relative";
                 
-                const idUnico = prod.SKU || index;
-                const inputId = `qty-${idUnico}`;
-                const colorContainerId = `colors-${idUnico}`;
-                const imgId = `img-${idUnico}`;
-                const labelColorId = `selected-color-${idUnico}`;
-                const btnAgregarId = `btn-agregar-${idUnico}`;
-                const stockAvisoId = `stock-aviso-${idUnico}`;
-
-                // 1. Validar Interruptor Maestro ("Stock General" -> Sí/No)
-                const stockGeneralTexto = (prod["Stock General"] || "").toString().trim().toUpperCase();
-                const estaDisponibleGeneral = stockGeneralTexto === "SI" || stockGeneralTexto === "SÍ" || stockGeneralTexto === "";
+                const sku = prod.sku || index;
+                const nombre = prod.nombre || "Producto sin nombre";
+                const marca = prod.marca || "Atlas";
+                const precio = Number(prod.precio_regular || 0);
+                const imagen = prod.imagen_principal || "";
                 
+                const stockGeneral = prod.stock_general;
+                const estaDisponibleGeneral = (stockGeneral === "" || stockGeneral === null || stockGeneral === undefined || Number(stockGeneral) > 0);
+
+                const inputId = `qty-${sku}-${index}`;
+                const colorContainerId = `colors-${sku}-${index}`;
+                const imgId = `img-${sku}-${index}`;
+                const labelColorId = `selected-color-${sku}-${index}`;
+                const btnAgregarId = `btn-agregar-${sku}-${index}`;
+                const stockAvisoId = `stock-aviso-${sku}-${index}`;
+
                 let textoBoton = "Agregar";
                 let claseBoton = "flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm";
                 let deshabilitarBoton = "";
 
-                if (!estaDisponibleGeneral) {
+                if (stockGeneral === 0 || stockGeneral === "0" || stockGeneral === false) {
                     textoBoton = "No disponible";
                     claseBoton = "flex-1 bg-gray-400 text-white h-10 rounded-lg cursor-not-allowed transition text-sm font-medium";
                     deshabilitarBoton = "disabled";
@@ -255,14 +257,14 @@
                 tarjeta.innerHTML = `
                     <div>
                         <div class="w-full h-44 mb-3 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
-                            <img id="${imgId}" src="${prod["Imagen Principal"] || ''}" alt="${prod["Nombre Producto"] || ''}" class="h-full object-contain p-2 transition-all duration-300">
+                            <img id="${imgId}" src="${imagen}" alt="${nombre}" class="h-full object-contain p-2 transition-all duration-300" onerror="this.src='https://via.placeholder.com/150?text=Sin+Imagen'">
                         </div>
-                        <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">${prod["Marca"] || 'Atlas'}</span>
-                        <h3 class="font-medium text-gray-800 text-sm line-clamp-2 mt-2">${prod["Nombre Producto"] || ''}</h3>
+                        <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">${marca}</span>
+                        <h3 class="font-medium text-gray-800 text-sm line-clamp-2 mt-2">${nombre}</h3>
                     </div>
                 
                     <div class="my-3">
-                        <p class="font-bold text-lg text-gray-900 mb-1">S/ ${Number(prod["Precio Regular"] || 0).toFixed(2)}</p>
+                        <p class="font-bold text-lg text-gray-900 mb-1">S/ ${precio.toFixed(2)}</p>
                         <div class="flex justify-between items-center text-xs text-gray-500 mb-1.5">
                             <span>Color: <span id="${labelColorId}" class="font-bold text-gray-700">Selecciona</span></span>
                             <span id="${stockAvisoId}" class="text-gray-400"></span>
@@ -278,7 +280,7 @@
                         </div>
                         
                         <button id="${btnAgregarId}" 
-                                onclick="agregarAlCarrito('${prod["Nombre Producto"] || ''}', ${prod["Precio Regular"] || 0}, '${inputId}', '${labelColorId}')" 
+                                onclick="agregarAlCarrito('${nombre}', ${precio}, '${inputId}', '${labelColorId}')" 
                                 ${deshabilitarBoton}
                                 class="${claseBoton}">
                             ${textoBoton}
@@ -288,59 +290,50 @@
                 
                 grid.appendChild(tarjeta);
     
-                // 2. Procesar variantes de "Colores y Stock"
                 const containerColores = document.getElementById(colorContainerId);
                 const labelColorSeleccionado = document.getElementById(labelColorId);
-                const imagenProducto = document.getElementById(imgId);
                 const btnAgregar = document.getElementById(btnAgregarId);
                 const avisoStock = document.getElementById(stockAvisoId);
                 
-                const cadenaColores = prod["Colores y Stock"] || "";
+                const listaColores = prod.colores || [];
                 
-                if (cadenaColores.trim() !== "") {
-                    // Extraer los items con formato Color(cantidad)
-                    const itemsColor = cadenaColores.split(',');
+                if (listaColores.length > 0) {
                     let primerColorValido = null;
 
-                    itemsColor.forEach((item, idx) => {
-                        const match = item.match(/([^(]+)\((\d+)\)/);
-                        if (match) {
-                            const nombreColor = match[1].trim();
-                            const stockColor = parseInt(match[2], 10);
+                    listaColores.forEach((itemColor, idx) => {
+                        const nombreColor = itemColor.nombre;
+                        const stockColor = itemColor.stock;
 
-                            if (idx === 0) primerColorValido = { nombre: nombreColor, stock: stockColor };
+                        if (idx === 0) primerColorValido = { nombre: nombreColor, stock: stockColor };
 
-                            const btnColor = document.createElement('button');
-                            btnColor.type = "button";
-                            btnColor.className = `w-5 h-5 rounded-full focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
-                            btnColor.style.cssText = obtenerEstiloColor(nombreColor);
-                            btnColor.title = `${nombreColor} (Stock: ${stockColor})`;
+                        const btnColor = document.createElement('button');
+                        btnColor.type = "button";
+                        btnColor.className = `w-5 h-5 rounded-full focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
+                        btnColor.style.cssText = obtenerEstiloColor(nombreColor);
+                        btnColor.title = `${nombreColor} (Stock: ${stockColor})`;
 
-                            btnColor.onclick = () => {
-                                containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
-                                btnColor.classList.add('ring-2', 'ring-emerald-600');
-                                labelColorSeleccionado.innerText = nombreColor;
-                                
-                                // Validación de stock por color individual (siempre que el maestro sea Sí)
-                                if (estaDisponibleGeneral) {
-                                    avisoStock.innerText = `Stock: ${stockColor}`;
-                                    if (stockColor <= 0) {
-                                        btnAgregar.disabled = true;
-                                        btnAgregar.innerText = "Agotado";
-                                        btnAgregar.className = "flex-1 bg-gray-400 text-white h-10 rounded-lg cursor-not-allowed transition text-sm font-medium";
-                                    } else {
-                                        btnAgregar.disabled = false;
-                                        btnAgregar.innerText = "Agregar";
-                                        btnAgregar.className = "flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm";
-                                    }
+                        btnColor.onclick = () => {
+                            containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
+                            btnColor.classList.add('ring-2', 'ring-emerald-600');
+                            labelColorSeleccionado.innerText = nombreColor;
+                            
+                            if (estaDisponibleGeneral) {
+                                avisoStock.innerText = `Stock: ${stockColor}`;
+                                if (stockColor <= 0) {
+                                    btnAgregar.disabled = true;
+                                    btnAgregar.innerText = "Agotado";
+                                    btnAgregar.className = "flex-1 bg-gray-400 text-white h-10 rounded-lg cursor-not-allowed transition text-sm font-medium";
+                                } else {
+                                    btnAgregar.disabled = false;
+                                    btnAgregar.innerText = "Agregar";
+                                    btnAgregar.className = "flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm";
                                 }
-                            };
+                            }
+                        };
 
-                            containerColores.appendChild(btnColor);
-                        }
+                        containerColores.appendChild(btnColor);
                     });
 
-                    // Inicializar con el primer color por defecto
                     if (primerColorValido) {
                         labelColorSeleccionado.innerText = primerColorValido.nombre;
                         if (estaDisponibleGeneral) {
@@ -353,7 +346,6 @@
                         }
                     }
                 } else {
-                    // Si no tiene colores especificados
                     labelColorSeleccionado.innerText = "Único";
                     containerColores.innerHTML = '<span class="text-xs text-gray-400">Sin variantes</span>';
                 }
@@ -392,7 +384,6 @@
 
         function obtenerEstiloColor(nombreColor) {
             if (!nombreColor) return "background-color: #9ca3af; border: 1px solid #d1d5db;";
-            
             const normalizado = nombreColor.toLowerCase().trim();
         
             if (normalizado.includes('surtido') || normalizado.includes('multicolor')) {
@@ -400,30 +391,15 @@
             }
         
             const mapaColores = {
-                "rojo": "#dc2626",
-                "azul": "#2563eb",
-                "amarillo": "#facc15",
-                "verde": "#16a34a",
-                "verde oscuro": "#065f46",
-                "verde limón": "#84cc16",
-                "celeste": "#38bdf8",
-                "anaranjado": "#f97316",
-                "naranja": "#f97316",
-                "lila": "#c084fc",
-                "rosado": "#f472b6",
-                "rosa": "#f472b6",
-                "blanco": "#ffffff",
-                "negro": "#111827",
-                "marrón": "#92400e",
-                "morado": "#7e22ce",
-                "turquesa": "#0d9488"
+                "rojo": "#dc2626", "azul": "#2563eb", "amarillo": "#facc15",
+                "verde": "#16a34a", "verde oscuro": "#065f46", "verde limón": "#84cc16",
+                "celeste": "#38bdf8", "anaranjado": "#f97316", "naranja": "#f97316",
+                "lila": "#c084fc", "rosado": "#f472b6", "rosa": "#f472b6",
+                "blanco": "#ffffff", "negro": "#111827", "marrón": "#92400e",
+                "morado": "#7e22ce", "turquesa": "#0d9488"
             };
         
-            if (mapaColores[normalizado]) {
-                return `background-color: ${mapaColores[normalizado]}; border: 1px solid #d1d5db;`;
-            }
-        
-            return "background-color: #9ca3af; border: 1px solid #d1d5db;";
+            return mapaColores[normalizado] ? `background-color: ${mapaColores[normalizado]}; border: 1px solid #d1d5db;` : "background-color: #9ca3af; border: 1px solid #d1d5db;";
         }
             
         cargarCatalogo();
