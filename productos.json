@@ -7,7 +7,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas cuadriculado.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -79,7 +79,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas t renglon.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -151,7 +151,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Atlas rayado.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -223,7 +223,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Arcoiris cuadric.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -275,7 +275,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Arcoiris TR.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -327,7 +327,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Arcoiris rayado.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -379,7 +379,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha decroly.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -461,7 +461,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha 1x1.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -543,7 +543,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha 2x2.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -625,7 +625,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Alpha triplekids.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -707,7 +707,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool cuadriculado.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -779,7 +779,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool triple renglon.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -851,7 +851,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool s cuadriculado.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -923,7 +923,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool s triple renglon.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -995,7 +995,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/alpha scool s rayado.jpg",
-        "stock_general": 0,
+        "stock_general": "Si",
         "colores": [
             {
                 "nombre": "Surtido",
@@ -1239,7 +1239,7 @@
             "Blocks"
         ],
         "imagen_principal": "nan",
-        "stock_general": 0,
+        "stock_general": "SI",
         "colores": [],
         "precio_regular": 5.0,
         "precio_oferta": 4.5,
