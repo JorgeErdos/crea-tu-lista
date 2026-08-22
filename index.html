@@ -123,8 +123,7 @@
         </div>
     </section>
 
-    <!-- 4. SECCIÓN DE CATÁLOGO (DONDE SE CARGARÁN LOS PRODUCTOS DEL JSON) -->
-    <!-- 4. SECCIÓN DE CATÁLOGO ACTUALIZADA -->
+    <!-- 4. SECCIÓN DE CATÁLOGO -->
     <section id="catalogo" class="py-12 max-w-6xl mx-auto px-4">
         <h2 id="titulo-seccion" class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Catálogo de Productos</h2>
         
@@ -148,7 +147,6 @@
     
         async function cargarCatalogo() {
             try {
-                // Agregamos un timestamp único (?t=...) para obligar al navegador a descargar el archivo nuevo
                 const timestamp = new Date().getTime();
                 const response = await fetch(`productos.json?t=${timestamp}`);
                 
@@ -157,31 +155,24 @@
                 }
                 
                 todosLosProductos = await response.json();
-                
-                // Guardamos estado inicial en el historial
+                renderizarProductos(todosLosProductos);
                 history.replaceState({ vista: 'inicio' }, '');
             } catch (error) {
                 console.error("Error al cargar productos:", error);
             }
         }
     
-        // 1. NIVEL 2: Mostrar Subcategorías al hacer clic en un Círculo Principal
         document.querySelectorAll('#categorias a').forEach(enlace => {
             enlace.addEventListener('click', (e) => {
                 e.preventDefault();
                 const categoriaPrincipal = e.currentTarget.querySelector('span').innerText.trim();
-                
-                // Modificamos el historial para que el botón "Atrás" funcione
                 history.pushState({ vista: 'subcategorias', categoria: categoriaPrincipal }, '', `#${categoriaPrincipal.toLowerCase()}`);
-                
                 renderizarSubcategorias(categoriaPrincipal);
             });
         });
     
         function renderizarSubcategorias(categoriaPrincipal) {
             document.getElementById('titulo-seccion').innerText = `Categoría: ${categoriaPrincipal}`;
-            
-            // Ocultamos elementos grandes en celular para centrar la vista en el catálogo
             const banner = document.querySelector('section.bg-gradient-to-b');
             if (banner) banner.style.display = 'none';
 
@@ -213,118 +204,162 @@
                 grid.appendChild(tarjetaSub);
             });
 
-            // Subimos la pantalla suavemente para que en celular se vea ordenado de inmediato
             document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
         }
     
-        // 2. NIVEL 3: Mostrar Productos de la Subcategoría
         function mostrarProductosDeSubcategoria(subcatSeleccionada) {
             document.getElementById('titulo-seccion').innerText = `Subcategoría: ${subcatSeleccionada}`;
-            
             const filtrados = todosLosProductos.filter(p => 
-                p.subcategorias && p.subcategorias.some(sc => sc.toLowerCase() === subcatSeleccionada.toLowerCase())
+                p.Subcategorías && p.Subcategorías.toLowerCase() === subcatSeleccionada.toLowerCase()
             );
-            
             renderizarProductos(filtrados);
             document.getElementById('catalogo').scrollIntoView({ behavior: 'smooth' });
         }
     
-        // Renderizador de tarjetas de productos
+        // Renderizador de tarjetas adaptado con Stock General y Colores Dinámicos
         function renderizarProductos(productos) {
             const grid = document.getElementById('grid-productos');
             grid.innerHTML = ''; 
     
             if (productos.length === 0) {
-                grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">No hay productos disponibles en esta subcategoría.</p>';
+                grid.innerHTML = '<p class="text-gray-500 col-span-full text-center py-8">No hay productos disponibles en esta sección.</p>';
                 return;
             }
     
             productos.forEach((prod, index) => {
                 const tarjeta = document.createElement('div');
-                // Tarjeta compacta, equilibrada y con altura uniforme
-                tarjeta.className = "bg-white rounded-xl shadow-sm border p-4 flex flex-col h-full justify-between hover:shadow-md transition";
+                tarjeta.className = "bg-white rounded-xl shadow-sm border p-4 flex flex-col h-full justify-between hover:shadow-md transition relative";
                 
-                const inputId = `qty-${prod.sku || index}`;
-                const colorContainerId = `colors-${prod.sku || index}`;
-                const imgId = `img-${prod.sku || index}`;
-                const labelColorId = `selected-color-${prod.sku || index}`;
-    
+                const idUnico = prod.SKU || index;
+                const inputId = `qty-${idUnico}`;
+                const colorContainerId = `colors-${idUnico}`;
+                const imgId = `img-${idUnico}`;
+                const labelColorId = `selected-color-${idUnico}`;
+                const btnAgregarId = `btn-agregar-${idUnico}`;
+                const stockAvisoId = `stock-aviso-${idUnico}`;
+
+                // 1. Validar Interruptor Maestro ("Stock General" -> Sí/No)
+                const stockGeneralTexto = (prod["Stock General"] || "").toString().trim().toUpperCase();
+                const estaDisponibleGeneral = stockGeneralTexto === "SI" || stockGeneralTexto === "SÍ" || stockGeneralTexto === "";
+                
+                let textoBoton = "Agregar";
+                let claseBoton = "flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm";
+                let deshabilitarBoton = "";
+
+                if (!estaDisponibleGeneral) {
+                    textoBoton = "No disponible";
+                    claseBoton = "flex-1 bg-gray-400 text-white h-10 rounded-lg cursor-not-allowed transition text-sm font-medium";
+                    deshabilitarBoton = "disabled";
+                }
+
                 tarjeta.innerHTML = `
-                    <!-- Parte Superior: Imagen y Marca -->
                     <div>
                         <div class="w-full h-44 mb-3 flex items-center justify-center bg-gray-50 rounded-lg overflow-hidden">
-                            <img id="${imgId}" src="${prod.imagen_principal}" alt="${prod.nombre}" class="h-full object-contain p-2 transition-all duration-300">
+                            <img id="${imgId}" src="${prod["Imagen Principal"] || ''}" alt="${prod["Nombre Producto"] || ''}" class="h-full object-contain p-2 transition-all duration-300">
                         </div>
-                        <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">${prod.marca || 'Atlas'}</span>
-                        <h3 class="font-medium text-gray-800 text-sm line-clamp-2 mt-2">${prod.nombre}</h3>
+                        <span class="text-xs text-emerald-700 font-semibold bg-emerald-50 px-2.5 py-1 rounded-full">${prod["Marca"] || 'Atlas'}</span>
+                        <h3 class="font-medium text-gray-800 text-sm line-clamp-2 mt-2">${prod["Nombre Producto"] || ''}</h3>
                     </div>
                 
-                    <!-- Parte Central: Precios y Colores -->
                     <div class="my-3">
-                        <p class="font-bold text-lg text-gray-900 mb-1">S/ ${prod.precio_regular.toFixed(2)}</p>
-                        <p class="text-xs text-gray-500 mb-1.5">Color: <span id="${labelColorId}" class="font-bold text-gray-700">Selecciona</span></p>
+                        <p class="font-bold text-lg text-gray-900 mb-1">S/ ${Number(prod["Precio Regular"] || 0).toFixed(2)}</p>
+                        <div class="flex justify-between items-center text-xs text-gray-500 mb-1.5">
+                            <span>Color: <span id="${labelColorId}" class="font-bold text-gray-700">Selecciona</span></span>
+                            <span id="${stockAvisoId}" class="text-gray-400"></span>
+                        </div>
                         <div class="flex flex-wrap gap-1.5 max-h-16 overflow-y-auto p-1" id="${colorContainerId}"></div>
                     </div>
                 
-                    <!-- AQUÍ VA EL NUEVO BLOQUE QUE ACABAMOS DE CREAR -->
                     <div class="mt-auto pt-3 border-t border-gray-100 flex items-center gap-2">
-                        <!-- Grupo de +/- -->
                         <div class="flex items-center border rounded-lg h-10 w-24">
                             <button onclick="ajustarCantidad('${inputId}', -1)" class="w-8 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-emerald-700 rounded-l-lg">-</button>
                             <input type="number" value="1" id="${inputId}" class="w-8 h-full text-center text-sm font-semibold focus:outline-none" readonly>
                             <button onclick="ajustarCantidad('${inputId}', 1)" class="w-8 h-full flex items-center justify-center text-gray-600 hover:bg-gray-100 hover:text-emerald-700 rounded-r-lg">+</button>
                         </div>
                         
-                        <!-- Botón Agregar -->
-                        <button onclick="agregarAlCarrito('${prod.nombre}', ${prod.precio_regular}, '${inputId}', '${labelColorId}')" 
-                                class="flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm">
-                            Agregar
+                        <button id="${btnAgregarId}" 
+                                onclick="agregarAlCarrito('${prod["Nombre Producto"] || ''}', ${prod["Precio Regular"] || 0}, '${inputId}', '${labelColorId}')" 
+                                ${deshabilitarBoton}
+                                class="${claseBoton}">
+                            ${textoBoton}
                         </button>
                     </div>
                 `;
                 
                 grid.appendChild(tarjeta);
     
-                // Renderizado de colores reales
+                // 2. Procesar variantes de "Colores y Stock"
                 const containerColores = document.getElementById(colorContainerId);
                 const labelColorSeleccionado = document.getElementById(labelColorId);
                 const imagenProducto = document.getElementById(imgId);
-    
-                // Si el producto no trae colores definidos en el JSON, usamos una lista por defecto o vacía
-                const coloresDisponibles = prod.colores && prod.colores.length > 0 ? prod.colores : [
-                    { nombre: "Rojo", clase: "bg-red-600", imagen: prod.imagen_principal },
-                    { nombre: "Azul", clase: "bg-blue-600", imagen: prod.imagen_principal },
-                    { nombre: "Amarillo", clase: "bg-yellow-400", imagen: prod.imagen_principal }
-                ];
-    
-                // Seleccionar el primer color por defecto
-                if (coloresDisponibles.length > 0) {
-                    labelColorSeleccionado.innerText = coloresDisponibles[0].nombre;
-                }
-    
-                coloresDisponibles.forEach((col, idx) => {
-                    const btnColor = document.createElement('button');
-                    btnColor.type = "button";
-                    // Usamos style con la función que retorna el color en hexadecimal
-                    btnColor.className = `w-5 h-5 rounded-full focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
-                    btnColor.style.cssText = obtenerEstiloColor(col.nombre);
-                    btnColor.title = col.nombre;
-                    
-                    btnColor.onclick = () => {
-                        containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
-                        btnColor.classList.add('ring-2', 'ring-emerald-600');
-                        labelColorSeleccionado.innerText = col.nombre;
-                        
-                        if (col.imagen) {
-                            imagenProducto.src = col.imagen;
+                const btnAgregar = document.getElementById(btnAgregarId);
+                const avisoStock = document.getElementById(stockAvisoId);
+                
+                const cadenaColores = prod["Colores y Stock"] || "";
+                
+                if (cadenaColores.trim() !== "") {
+                    // Extraer los items con formato Color(cantidad)
+                    const itemsColor = cadenaColores.split(',');
+                    let primerColorValido = null;
+
+                    itemsColor.forEach((item, idx) => {
+                        const match = item.match(/([^(]+)\((\d+)\)/);
+                        if (match) {
+                            const nombreColor = match[1].trim();
+                            const stockColor = parseInt(match[2], 10);
+
+                            if (idx === 0) primerColorValido = { nombre: nombreColor, stock: stockColor };
+
+                            const btnColor = document.createElement('button');
+                            btnColor.type = "button";
+                            btnColor.className = `w-5 h-5 rounded-full focus:outline-none ring-offset-2 ${idx === 0 ? 'ring-2 ring-emerald-600' : ''} transition transform hover:scale-110 shadow-sm`;
+                            btnColor.style.cssText = obtenerEstiloColor(nombreColor);
+                            btnColor.title = `${nombreColor} (Stock: ${stockColor})`;
+
+                            btnColor.onclick = () => {
+                                containerColores.querySelectorAll('button').forEach(b => b.classList.remove('ring-2', 'ring-emerald-600'));
+                                btnColor.classList.add('ring-2', 'ring-emerald-600');
+                                labelColorSeleccionado.innerText = nombreColor;
+                                
+                                // Validación de stock por color individual (siempre que el maestro sea Sí)
+                                if (estaDisponibleGeneral) {
+                                    avisoStock.innerText = `Stock: ${stockColor}`;
+                                    if (stockColor <= 0) {
+                                        btnAgregar.disabled = true;
+                                        btnAgregar.innerText = "Agotado";
+                                        btnAgregar.className = "flex-1 bg-gray-400 text-white h-10 rounded-lg cursor-not-allowed transition text-sm font-medium";
+                                    } else {
+                                        btnAgregar.disabled = false;
+                                        btnAgregar.innerText = "Agregar";
+                                        btnAgregar.className = "flex-1 bg-emerald-700 text-white h-10 rounded-lg hover:bg-emerald-800 transition text-sm font-medium shadow-sm";
+                                    }
+                                }
+                            };
+
+                            containerColores.appendChild(btnColor);
                         }
-                    };
-                    containerColores.appendChild(btnColor);
-                });
+                    });
+
+                    // Inicializar con el primer color por defecto
+                    if (primerColorValido) {
+                        labelColorSeleccionado.innerText = primerColorValido.nombre;
+                        if (estaDisponibleGeneral) {
+                            avisoStock.innerText = `Stock: ${primerColorValido.stock}`;
+                            if (primerColorValido.stock <= 0) {
+                                btnAgregar.disabled = true;
+                                btnAgregar.innerText = "Agotado";
+                                btnAgregar.className = "flex-1 bg-gray-400 text-white h-10 rounded-lg cursor-not-allowed transition text-sm font-medium";
+                            }
+                        }
+                    }
+                } else {
+                    // Si no tiene colores especificados
+                    labelColorSeleccionado.innerText = "Único";
+                    containerColores.innerHTML = '<span class="text-xs text-gray-400">Sin variantes</span>';
+                }
             });
         }
     
-        // 3. CONTROL DEL BOTÓN "ATRÁS" DEL NAVEGADOR
         window.addEventListener('popstate', (event) => {
             const estado = event.state;
             const banner = document.querySelector('section.bg-gradient-to-b');
@@ -351,10 +386,7 @@
         function ajustarCantidad(inputId, cambio) {
             const input = document.getElementById(inputId);
             let valor = parseInt(input.value) + cambio;
-            
-            // Evitamos que la cantidad sea menor a 1
             if (valor < 1) valor = 1;
-            
             input.value = valor;
         }
 
@@ -363,12 +395,10 @@
             
             const normalizado = nombreColor.toLowerCase().trim();
         
-            // Caso especial para Surtido (Degradado multicolor)
             if (normalizado.includes('surtido') || normalizado.includes('multicolor')) {
                 return "background: linear-gradient(to right, #ef4444, #eab308, #3b82f6); border: 1px solid #d1d5db;";
             }
         
-            // Tu diccionario base con los colores y sus códigos hexadecimales
             const mapaColores = {
                 "rojo": "#dc2626",
                 "azul": "#2563eb",
@@ -389,17 +419,14 @@
                 "turquesa": "#0d9488"
             };
         
-            // Si está en el diccionario, usa su color exacto
             if (mapaColores[normalizado]) {
                 return `background-color: ${mapaColores[normalizado]}; border: 1px solid #d1d5db;`;
             }
         
-            // Si no está registrado, se muestra en gris como aviso visual para que lo agregues
             return "background-color: #9ca3af; border: 1px solid #d1d5db;";
         }
             
         cargarCatalogo();
     </script>
-    
 </body>
 </html>
