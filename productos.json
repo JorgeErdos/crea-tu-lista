@@ -917,7 +917,7 @@
     },
     {
         "sku": "CUAD-42",
-        "nombre": "Cuaderno A$ triple renglón 60gr 88 hojas",
+        "nombre": "Cuaderno A4 triple renglón 60gr 88 hojas",
         "marca": "Alpha Scool S",
         "subcategorias": [
             "Cuadernos"
@@ -1067,7 +1067,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": 0,
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -1089,7 +1089,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": 0,
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -1111,7 +1111,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "imagenes/Cuadernos/Caja cuadernos Alpha Scool.jpg",
-        "stock_general": 0,
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -1133,7 +1133,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": 0,
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -1155,7 +1155,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": 0,
+        "stock_general": null,
         "colores": [
             {
                 "nombre": "Surtido",
@@ -1207,7 +1207,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": 0,
+        "stock_general": null,
         "colores": [],
         "precio_regular": 0.0,
         "precio_oferta": null,
@@ -1223,7 +1223,7 @@
             "Cuadernos"
         ],
         "imagen_principal": "nan",
-        "stock_general": 0,
+        "stock_general": null,
         "colores": [],
         "precio_regular": 0.0,
         "precio_oferta": null,
@@ -1239,7 +1239,7 @@
             "Blocks"
         ],
         "imagen_principal": "nan",
-        "stock_general": 10,
+        "stock_general": 0,
         "colores": [],
         "precio_regular": 5.0,
         "precio_oferta": 4.5,
